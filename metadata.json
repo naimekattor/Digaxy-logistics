@@ -1,0 +1,7 @@
+{
+  "name": "Digaxy Logistics",
+  "description": "A comprehensive logistics platform connecting customers, drivers, and helpers for efficient delivery services.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
