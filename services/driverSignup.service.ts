@@ -1,10 +1,10 @@
-import { useDriverSignupStore } from "@/stores/driverSignup.store";
+import { useDriverSignupStore, DriverSignupState } from "@/stores/driverSignup.store";
 
 export async function submitDriverSignup(data: DriverSignupState) {
   const fd = new FormData();
 
   // Basic
-  fd.append("full_name", data.basicInfo.fullName);
+  fd.append("username", data.basicInfo.username);
   fd.append("email", data.basicInfo.email);
   fd.append("password", data.basicInfo.password);
   fd.append("role", "DRIVER");

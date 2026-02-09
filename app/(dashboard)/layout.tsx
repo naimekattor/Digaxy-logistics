@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useAuth } from '@/lib/authContext';
+import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 
@@ -10,17 +10,17 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoading } = useAuth();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
 
   React.useEffect(() => {
-    if (!isLoading && !user) {
+    if (status === 'unauthenticated') {
       router.push('/login');
     }
-  }, [user, isLoading, router]);
+  }, [status, router]);
 
-  if (isLoading) {
+  if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FDFBF7]">
         <div className="animate-pulse text-brand-gold font-serif text-2xl">DIGAXY...</div>
@@ -28,10 +28,10 @@ export default function DashboardLayout({
     );
   }
 
-  if (!user) return null;
+  if (!session) return null;
 
   // Check for pending driver status
-  if (user.role === 'driver' && user.status === 'pending') {
+  if (session.role === 'driver' && session.driverStatus !== 'Approved') {
     return (
       <div className="min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center p-4">
         <div className="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full text-center border border-amber-100">
@@ -63,7 +63,7 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#FDFBF7]">
-      <Sidebar role={user.role} />
+      <Sidebar role={session.role} />
       <main className="lg:pl-64 min-h-screen transition-all duration-300">
         <div className="container mx-auto p-6 pt-20 lg:pt-8 max-w-6xl">
           {children}

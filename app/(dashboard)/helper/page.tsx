@@ -1,13 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useAuth } from '@/lib/authContext';
 import { Toggle, Button, Card } from '@/components/ui/Primitives';
 import EarningsWidget from '@/components/dashboard/EarningsWidget';
 import { MapPin, CheckCircle2, Calendar, FileText, DollarSign, Clock } from 'lucide-react';
 
 export default function HelperDashboardPage() {
-  const { user } = useAuth();
   const [isOnline, setIsOnline] = useState(true);
 
   const bulletPoints = [

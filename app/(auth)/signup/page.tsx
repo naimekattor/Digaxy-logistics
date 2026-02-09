@@ -15,11 +15,9 @@ function SignupContent() {
   const searchParams = useSearchParams();
   const initialRole = searchParams.get('role') as UserRole || UserRole.CUSTOMER;
   
-  const { signup, isLoading } = useAuth();
   const [role, setRole] = useState<UserRole>(initialRole);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -32,18 +30,43 @@ function SignupContent() {
   }, [initialRole]);
 
   const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-        setError("Passwords do not match");
-        return;
+  e.preventDefault();
+
+  if (formData.password !== formData.confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  try {
+    let endpoint = '';
+    if (role === UserRole.CUSTOMER) endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/customer/signup/`;
+    else if (role === UserRole.HELPER) endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/helper/signup/`;
+    else if (role === UserRole.DRIVER) {
+      return;
     }
-    try {
-        await signup(`${formData.firstName} ${formData.lastName}`, formData.email, role);
-        router.push(role === UserRole.DRIVER ? '/driver' : role === UserRole.HELPER ? '/helper' : '/customer');
-    } catch (err) {
-        setError("Signup failed. Please try again.");
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      setError(data.message || "Signup failed. Please try again.");
+      return;
     }
-  };
+
+    router.push(role === UserRole.CUSTOMER ? '/customer' : '/helper');
+  } catch (err) {
+    setError("Signup failed. Please try again.");
+  }
+};
+
 
   if (role === UserRole.DRIVER) {
       return <DriverOnboardingWizard />;
@@ -57,15 +80,10 @@ function SignupContent() {
       </div>
 
       <form onSubmit={handleSignup} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="">
           <Input 
-            placeholder="First name" 
-            onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-            required 
-          />
-          <Input 
-            placeholder="Last name" 
-            onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+            placeholder="User name" 
+            onChange={(e) => setFormData({...formData, username: e.target.value})}
             required 
           />
         </div>
@@ -113,7 +131,7 @@ function SignupContent() {
 
         {error && <p className="text-xs text-red-500">{error}</p>}
 
-        <Button type="submit" isLoading={isLoading} className="w-full bg-[#A37800] hover:bg-[#866200] h-12 text-lg">
+        <Button type="submit"  className="w-full bg-[#A37800] hover:bg-[#866200] h-12 text-lg">
           Sign Up
         </Button>
       </form>

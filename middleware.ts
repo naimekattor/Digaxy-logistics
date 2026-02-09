@@ -1,29 +1,40 @@
-import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export default withAuth(
-  // function middleware(req) {
-  //   const token = req.nextauth.token;
-  //   const path = req.nextUrl.pathname;
-  //   const role = token?.role;
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req });
+  const { pathname } = req.nextUrl;
 
-  //   // Role-based redirection
-  //   if (path.startsWith("/driver") && role !== "driver") {
-  //     return NextResponse.redirect(new URL("/", req.url));
-  //   }
-  //   if (path.startsWith("/helper") && role !== "helper") {
-  //     return NextResponse.redirect(new URL("/", req.url));
-  //   }
-  //   if (path.startsWith("/customer") && role !== "customer") {
-  //     return NextResponse.redirect(new URL("/", req.url));
-  //   }
-  // },
-  {
-    callbacks: {
-      authorized: ({ token }) => !!token,
-    },
+  // public routes
+  if (pathname.startsWith("/login") || pathname.startsWith("/join")) {
+    return NextResponse.next();
   }
-);
+
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  // Driver approval gate
+  if (token.role === "driver" && token.driverStatus !== "Approved") {
+    return NextResponse.redirect(new URL("/pending", req.url));
+  }
+
+  // Role based protection
+  if (pathname.startsWith("/driver") && token.role !== "driver") {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  if (pathname.startsWith("/helper") && token.role !== "helper") {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  if (pathname.startsWith("/customer") && token.role !== "customer") {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: ["/driver/:path*", "/helper/:path*", "/customer/:path*"],

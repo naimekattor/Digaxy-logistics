@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/lib/authContext';
+import { useSession, signOut } from 'next-auth/react';
 import { 
   Home, 
   Bell, 
@@ -28,8 +28,8 @@ interface SidebarProps {
 
 export default function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
+  const { data: session } = useSession();
 
   // Define navigation based on role
   const getNavItems = () => {
@@ -127,11 +127,11 @@ export default function Sidebar({ role }: SidebarProps) {
             <div className="w-8 h-8 flex items-center justify-center text-brand-gold">
                 <User size={20} />
             </div>
-            <span className="font-medium text-gray-900">{user?.name || "Naim Doe"}</span>
+            <span className="font-medium text-gray-900">{session?.user?.name || "Naim Doe"}</span>
           </div>
           
           <button 
-            onClick={logout}
+            onClick={() => signOut({ callbackUrl: "/login" })}
             className="flex items-center gap-4 px-2 py-2 text-md font-medium text-brand-gold hover:bg-red-50 hover:text-red-600 rounded-xl transition-all w-full"
           >
             <LogOut size={20} />

@@ -15,9 +15,9 @@ export default function BasicInfoStep() {
     <div className="space-y-4">
       <div className="">
         <Input 
-          placeholder="Full name" 
-          value={basicInfo.fullName}
-          onChange={(e) => updateData("basicInfo",{fullName: e.target.value})}
+          placeholder="User name" 
+          value={basicInfo.username}
+          onChange={(e) => updateData("basicInfo",{username: e.target.value})}
           required 
         />
       </div>

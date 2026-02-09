@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/authContext';
 import { Button } from '@/components/ui/Primitives';
 import { UserRole } from '@/types';
 import BasicInfoStep from './steps/BasicInfoStep';
@@ -17,10 +16,10 @@ import { submitDriverSignup } from '@/services/driverSignup.service';
 
 export default function DriverOnboardingWizard() {
   const router = useRouter();
-  const { signup, isLoading } = useAuth();
   const [step, setStep] = useState(1);
   const [error, setError] = useState('');
   const {basicInfo}=useDriverSignupStore();
+  const[loading,setLoading]=useState(false);
 
   const totalSteps = 5;
 
@@ -28,7 +27,7 @@ export default function DriverOnboardingWizard() {
     setError('');
     
     if (step === 1) {
-        if (!basicInfo.fullName || !basicInfo.email || !basicInfo.password || !basicInfo.confirmPassword) {
+        if (!basicInfo.username || !basicInfo.email || !basicInfo.password || !basicInfo.confirmPassword) {
             setError("Please fill in all fields");
             return;
         }
@@ -51,13 +50,16 @@ export default function DriverOnboardingWizard() {
 
   const handleSubmit = async () => {
   try {
+    setLoading(true);
     const data = useDriverSignupStore.getState();
     await submitDriverSignup(data);
 
-    router.push("/driver/pending");
+    router.push("/pending");
   } catch (err) {
     console.error(err);
     alert("Driver application failed");
+  }finally{
+    setLoading(false);
   }
 };
 
@@ -105,11 +107,11 @@ export default function DriverOnboardingWizard() {
         )}
         <Button 
           onClick={handleNext} 
-          isLoading={isLoading}
+          isLoading={loading}
           className="flex-1 h-12 bg-[#A37800] hover:bg-[#866200]"
         >
           {step === totalSteps ? (
-              <span className="flex items-center gap-2">Submit Application <Check size={18} /></span>
+              <span className="flex items-center gap-2">{loading ? "Submitting Application..." : "Submit Application"}<Check size={18} /></span>
           ) : (
               <span className="flex items-center gap-2">Next Step <ChevronRight size={18} /></span>
           )}

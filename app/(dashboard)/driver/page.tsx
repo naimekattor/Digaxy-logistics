@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useAuth } from '@/lib/authContext';
+import { useSession } from 'next-auth/react';
 import { Toggle, Button, Card } from '@/components/ui/Primitives';
 import EarningsWidget from '@/components/dashboard/EarningsWidget';
 import { MapPin, Package, Calendar, FileText, DollarSign, Clock } from 'lucide-react';
 
 export default function DriverDashboardPage() {
-  const { user } = useAuth();
+  const { data: session } = useSession();
   const [isOnline, setIsOnline] = useState(true);
 
   return (
     <div className="max-w-5xl">
         {/* Header Section */}
         <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back, {user?.name?.split(' ')[0] || 'Naim'}!</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome Back, {session?.user?.name?.split(' ')[0] || 'Naim'}!</h1>
             <p className="text-gray-500 mt-1 font-medium">You're ready to start earning.</p>
         </div>
 

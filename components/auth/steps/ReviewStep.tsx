@@ -66,7 +66,7 @@ export default function ReviewStep() {
         {/* Personal Info */}
         <Section title="Personal Info">
           <Grid>
-            <p>Name: {basicInfo.fullName} </p>
+            <p>Name: {basicInfo.username} </p>
             <p>Email: {basicInfo.email}</p>
           </Grid>
         </Section>

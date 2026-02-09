@@ -1,54 +1,63 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signIn } from 'next-auth/react';
-import { useAuth } from '@/lib/authContext';
-import { Button, Input } from '@/components/ui/Primitives'; // Removed Card
+import { signIn, useSession } from 'next-auth/react';
+import { Button, Input } from '@/components/ui/Primitives'; 
 import { UserRole } from '@/types';
 import AuthLayout from '@/components/auth/AuthLayout';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isLoading } = useAuth();
   const [role, setRole] = useState<UserRole>(UserRole.CUSTOMER);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const { data: session, status } = useSession();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    
-    if (!email || !password) {
-        setError("Please fill in all fields");
-        return;
+  e.preventDefault();
+  setError("");
+
+  if (!email || !password) {
+    setError("Please fill in all fields");
+    return;
+  }
+
+  try {
+    const result = await signIn("credentials", {
+      email,
+      password,
+      redirect: false, 
+    });
+
+    if (result?.error) {
+      setError(result.error);
+      return;
     }
 
-    try {
-        const result = await signIn('credentials', {
-            email,
-            password,
-            role,
-            redirect: false,
-        });
+  } catch (err) {
+    setError("Login failed. Please try again.");
+  }
+};
 
-        if (result?.error) {
-            setError("Invalid credentials");
-            return;
-        }
 
-        // Also update local mock context if desired, or skip if only using NextAuth
-        await login(email, role);
-        
-        if (role === UserRole.DRIVER) router.push('/driver');
-        else if (role === UserRole.HELPER) router.push('/helper');
-        else router.push('/customer');
-    } catch (err) {
-        setError("Login failed. Please try again.");
-    }
-  };
+const roleRoutes = {
+  customer: "/customer",
+  driver: "/driver",
+  helper: "/helper",
+};
+
+useEffect(() => {
+    if (status !== "authenticated") return;
+
+    const role = session?.role;
+
+    if (role === "driver") router.replace("/driver");
+    else if (role === "helper") router.replace("/helper");
+    else router.replace("/customer");
+  }, [status, session, router]);
 
 
     return (
@@ -59,7 +68,7 @@ export default function LoginPage() {
       </div>
 
       {/* Role Selector */}
-      <div className="flex rounded-xl bg-gray-100 p-1 mb-6">
+      {/* <div className="flex rounded-xl bg-gray-100 p-1 mb-6">
         {[UserRole.CUSTOMER, UserRole.DRIVER, UserRole.HELPER].map((r) => (
           <button
             key={r}
@@ -72,7 +81,7 @@ export default function LoginPage() {
             {r}
           </button>
         ))}
-      </div>
+      </div> */}
 
       <form onSubmit={handleLogin} className="space-y-4">
         <Input 
@@ -96,7 +105,7 @@ export default function LoginPage() {
           <a href="#" className="text-sm text-brand-gold hover:underline">Forgot password?</a>
         </div>
 
-        <Button type="submit" isLoading={isLoading} className="mt-6 w-full">
+        <Button type="submit"  className="mt-6 w-full">
           Log In
         </Button>
       </form>
@@ -105,7 +114,6 @@ export default function LoginPage() {
         Don't have an account? <Link href="/join" className="text-brand-gold font-semibold">Sign Up</Link>
       </p>
 
-      {/* Quick Access Section stays here... */}
     </AuthLayout>
   );
 }

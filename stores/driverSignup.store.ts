@@ -1,9 +1,9 @@
 import { create } from "zustand";
-interface DriverSignupState {
+export interface DriverSignupState {
   step: number;
 
   basicInfo: {
-    fullName?: string;
+    username?: string;
     password?: string;
     confirmPassword?: string;
     email?: string;

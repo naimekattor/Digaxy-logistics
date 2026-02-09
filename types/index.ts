@@ -1,7 +1,7 @@
 export enum UserRole {
   DRIVER = 'driver',
   HELPER = 'helper',
-  CUSTOMER = 'customer'
+  CUSTOMER = 'mover'
 }
 
 export enum DriverStatus {
