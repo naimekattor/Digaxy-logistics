@@ -12,6 +12,10 @@ import {
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
+import { createParcel } from '@/services/parcel.service';
+import { ParcelCreateRequest, ParcelResponse } from '@/types/parcel';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
 
 // Dynamically import MapSelector to avoid SSR issues
 const MapSelector = dynamic(() => import('@/components/MapSelector'), {
@@ -30,7 +34,7 @@ const locations = [
 ];
 
 const vehicleTypes = [
-    { id: 'pickup', name: 'Pickup Truck', price: '$42.92 + $1.62', detail: 'per labor min', imageSrc: "/images/pickup_truck.png" },
+    { id: 'pickup', name: 'Pickup', price: '$42.92 + $1.62', detail: 'per labor min', imageSrc: "/images/pickup_truck.png" },
     { id: 'van', name: 'Van', price: '$77 + $2.02', detail: 'per labor min', imageSrc: "/images/van.png" },
     { id: 'box', name: 'Mini Box Truck', price: '$144.51 + $2.30', detail: 'per labor min', imageSrc: "/images/mini_box_truck.png" },
     { id: 'box26feet', name: '26 Feet Box Truck', price: '$230 + $4.99', detail: 'per labor min', imageSrc: "/images/26Feet_box_truck.png" },
@@ -77,6 +81,31 @@ export default function CustomerDashboardPage() {
     city?: string;
   } | null>(null);
 
+  const { data: session } = useSession();
+  const [loading, setLoading] = useState(false);
+  const [createdParcel, setCreatedParcel] = useState<ParcelResponse | null>(null);
+
+  // Parcel creation state
+  const [parcelData, setParcelData] = useState({
+    pickup_date: new Date().toISOString().split('T')[0],
+    pickup_time: '10:00',
+    pickup_user_name: '',
+    phone_number: '',
+    pickup_address: '',
+    drop_user_name: '',
+    drop_number: '',
+    drop_address: '',
+    price: '75.00',
+    vehicle_type: 'Pickup',
+    notes: '',
+    special_instructions: '',
+    percel_type: 'Medium',
+    latitude: '0.0',
+    longitude: '0.0',
+    estimated_distance_km: '10',
+    estimated_time_minutes: '30'
+  });
+
   // Lifted states from conditional block
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
@@ -107,13 +136,13 @@ export default function CustomerDashboardPage() {
   );
 
   const vehicleSummaryCard = () => (
-    <Card className="flex items-center gap-6 p-6 mb-12 bg-gray-50 border-none rounded-[2rem]">
-        <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-sm">
-            <Truck size={48} className="text-gray-800" />
+    <Card className="flex items-center gap-6 p-6 mb-8 bg-white border border-gray-100 rounded-[2rem] shadow-sm">
+        <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center">
+            <Truck size={40} className="text-gray-800" />
         </div>
         <div>
-            <h3 className="text-xl font-bold text-gray-900">Pickup Truck</h3>
-            <p className="text-gray-500 font-medium italic">Best for small deliveries</p>
+            <h3 className="text-lg font-bold text-gray-900">Pickup Truck</h3>
+            <p className="text-gray-500 font-medium">Best for small deliveries</p>
         </div>
     </Card>
   );
@@ -279,6 +308,40 @@ export default function CustomerDashboardPage() {
 
   <div className="space-y-6">
 
+    {/* Name & Phone */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-2">
+        <label className="text-lg font-bold text-gray-900">
+          {isPickup ? "Pickup Contact Name" : "Drop Contact Name"}
+        </label>
+        <Input
+          placeholder='E.g. "John Doe"'
+          className="bg-white border-brand-gold/30 h-16 rounded-2xl text-lg pl-8"
+          value={isPickup ? parcelData.pickup_user_name : parcelData.drop_user_name}
+          onChange={(e) => setParcelData(prev => ({
+            ...prev,
+            [isPickup ? 'pickup_user_name' : 'drop_user_name']: e.target.value
+          }))}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <label className="text-lg font-bold text-gray-900">
+          {isPickup ? "Pickup Phone Number" : "Drop Phone Number"}
+        </label>
+        <Input
+          placeholder='E.g. "+1 234 567 890"'
+          className="bg-white border-brand-gold/30 h-16 rounded-2xl text-lg pl-8"
+          value={isPickup ? parcelData.phone_number : parcelData.drop_number}
+          onChange={(e) => setParcelData(prev => ({
+            ...prev,
+            [isPickup ? 'phone_number' : 'drop_number']: e.target.value
+          }))}
+          required
+        />
+      </div>
+    </div>
+
     {/* Address Line 1 */}
     <div className="space-y-2">
       <label className="text-lg font-bold text-gray-900">
@@ -288,69 +351,16 @@ export default function CustomerDashboardPage() {
         name="street"
         placeholder='E.g. "34 Park Ave"'
         className="bg-white border-brand-gold/30 h-16 rounded-2xl text-lg pl-8"
+        value={isPickup ? parcelData.pickup_address : parcelData.drop_address}
+        onChange={(e) => {
+          const val = e.target.value;
+          setParcelData(prev => ({
+            ...prev,
+            [isPickup ? 'pickup_address' : 'drop_address']: val
+          }));
+        }}
         required
       />
-    </div>
-
-    {/* Address Line 2 */}
-    <div className="space-y-2">
-      <label className="text-lg font-bold text-gray-900">
-        Apartment / Suite (optional)
-      </label>
-      <Input
-        name="apartment"
-        placeholder='E.g. "Apt 5B"'
-        className="bg-white border-brand-gold/30 h-16 rounded-2xl text-lg pl-8"
-      />
-    </div>
-
-    {/* City */}
-    <div className="space-y-2">
-      <label className="text-lg font-bold text-gray-900">
-        City
-      </label>
-      <Input
-        name="city"
-        placeholder='E.g. "New York"'
-        className="bg-white border-brand-gold/30 h-16 rounded-2xl text-lg pl-8"
-        required
-      />
-    </div>
-
-    {/* State + ZIP */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <div className="space-y-2">
-        <label className="text-lg font-bold text-gray-900">
-          State
-        </label>
-        <select
-          name="state"
-          required
-          className="w-full bg-white border border-brand-gold/30 h-16 rounded-2xl text-lg pl-6 pr-4"
-        >
-          <option value="">Select State</option>
-          <option value="NY">NY</option>
-          <option value="CA">CA</option>
-          <option value="TX">TX</option>
-          {/* add all states */}
-        </select>
-      </div>
-
-      <div className="space-y-2">
-        <label className="text-lg font-bold text-gray-900">
-          ZIP Code
-        </label>
-        <Input
-          name="zip"
-          placeholder='E.g. "10001"'
-          inputMode="numeric"
-          pattern="[0-9]{5}"
-          className="bg-white border-brand-gold/30 h-16 rounded-2xl text-lg pl-8"
-          required
-        />
-      </div>
-
     </div>
   </div>
 </form>
@@ -408,17 +418,19 @@ export default function CustomerDashboardPage() {
                             <MapSelector 
                                 onLocationSelect={(location) => {
                                     if (isPickup) {
-                                        setPickupLocation({
-                                            ...location,
-                                            street: location.address?.split(',')[0] || '',
-                                            city: location.address?.split(',').slice(1).join(', ') || ''
-                                        });
+                                        setPickupLocation(location);
+                                        setParcelData(prev => ({
+                                          ...prev,
+                                          pickup_address: location.address || '',
+                                          latitude: location.lat.toString(),
+                                          longitude: location.lng.toString()
+                                        }));
                                     } else {
-                                        setDropLocation({
-                                            ...location,
-                                            street: location.address?.split(',')[0] || '',
-                                            city: location.address?.split(',').slice(1).join(', ') || ''
-                                        });
+                                        setDropLocation(location);
+                                        setParcelData(prev => ({
+                                          ...prev,
+                                          drop_address: location.address || ''
+                                        }));
                                     }
                                 }}
                             />
@@ -447,7 +459,7 @@ export default function CustomerDashboardPage() {
           <div className="max-w-4xl mx-auto">
               {stepHeader('Estimated Distance & Price', 'drop-location')}
               {vehicleSummaryCard()}
-              <p className="text-gray-500 text-lg mb-10 max-w-2xl font-medium italic">
+              <p className="text-gray-500 text-lg mb-10 max-w-2xl font-medium">
                   Here's a quick overview of your delivery details — including distance, estimated cost, and travel route.
               </p>
 
@@ -456,11 +468,11 @@ export default function CustomerDashboardPage() {
                   <div className="space-y-6">
                       <div>
                           <p className="font-bold text-gray-900 mb-2">Estimated Distance:</p>
-                          <p className="text-gray-500 font-medium italic">Automatically calculated based on your pickup and drop locations.</p>
+                          <p className="text-gray-500 font-medium">Automatically calculated based on your pickup and drop locations.</p>
                       </div>
                       <div>
                           <p className="font-bold text-gray-900 mb-2">Estimated Price:</p>
-                          <p className="text-gray-500 font-medium italic">Generated according to the selected vehicle type, distance, and base fare.</p>
+                          <p className="text-gray-500 font-medium">Generated according to the selected vehicle type, distance, and base fare.</p>
                       </div>
                   </div>
               </div>
@@ -488,6 +500,25 @@ export default function CustomerDashboardPage() {
   }
 
   if (view === 'booking-details') {
+    const handleConfirmBooking = async () => {
+      setLoading(true);
+      try {
+        const payload: ParcelCreateRequest = {
+          ...parcelData,
+          vehicle_type: vehicleTypes.find(v => v.id === selectedVehicle)?.name || 'Pickup',
+        };
+        const response = await createParcel(payload, session?.accessToken);
+        setCreatedParcel(response);
+        setView('booking-confirmed');
+        toast.success('Booking confirmed successfully!');
+      } catch (err: any) {
+        toast.error(err.message || 'Failed to create booking');
+        console.error('Parcel Creation Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
       return (
           <div className=" mx-auto">
               {stepHeader('Movers on your schedule', 'estimation')}
@@ -499,10 +530,12 @@ export default function CustomerDashboardPage() {
                             <span className="font-bold">Select Date</span>
                       </div>
                       <div className="relative">
-                          <select className="w-full h-20 pl-8 pr-12 bg-white border border-brand-gold/30 rounded-3xl text-xl font-medium appearance-none outline-none focus:ring-2 focus:ring-brand-gold transition-all">
-                              <option>November 12, 2025</option>
-                          </select>
-                          <ChevronDown size={24} className="absolute right-8 top-7 text-gray-500" />
+                          <input 
+                            type="date"
+                            className="w-full h-20 px-8 bg-white border border-brand-gold/30 rounded-3xl text-xl font-medium outline-none focus:ring-2 focus:ring-brand-gold transition-all"
+                            value={parcelData.pickup_date}
+                            onChange={(e) => setParcelData(prev => ({ ...prev, pickup_date: e.target.value }))}
+                          />
                       </div>
                   </div>
 
@@ -512,10 +545,58 @@ export default function CustomerDashboardPage() {
                             <span className="font-bold">Select Time Slot</span>
                       </div>
                       <div className="relative">
-                          <select className="w-full h-20 pl-8 pr-12 bg-white border border-brand-gold/30 rounded-3xl text-xl font-medium appearance-none outline-none focus:ring-2 focus:ring-brand-gold transition-all">
-                              <option>10:00AM - 12:00PM</option>
+                          <select 
+                            className="w-full h-20 pl-8 pr-12 bg-white border border-brand-gold/30 rounded-3xl text-xl font-medium appearance-none outline-none focus:ring-2 focus:ring-brand-gold transition-all"
+                            value={parcelData.pickup_time}
+                            onChange={(e) => setParcelData(prev => ({ ...prev, pickup_time: e.target.value }))}
+                          >
+                              <option value="10:00">10:00AM - 12:00PM</option>
+                              <option value="12:00">12:00PM - 02:00PM</option>
+                              <option value="14:00">02:00PM - 04:00PM</option>
+                              <option value="16:00">04:00PM - 06:00PM</option>
                           </select>
                           <Clock size={24} className="absolute right-8 top-7 text-gray-400" />
+                      </div>
+                  </div>
+
+                  <div className="space-y-6">
+                      <div className="flex items-center gap-4 text-brand-gold">
+                            <Box size={20} />
+                            <span className="font-bold">Parcel Details</span>
+                      </div>
+                      <div className="space-y-4 pl-8">
+                          <div className="space-y-4">
+                            <div>
+                                <label className="text-lg font-bold text-gray-900 mb-2 block">Parcel Type</label>
+                                <select 
+                                    className="w-full h-16 px-6 bg-white border border-brand-gold/30 rounded-2xl text-lg font-medium outline-none focus:ring-2 focus:ring-brand-gold transition-all"
+                                    value={parcelData.percel_type}
+                                    onChange={(e) => setParcelData(prev => ({ ...prev, percel_type: e.target.value }))}
+                                >
+                                    <option value="Small">Small</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Large">Large</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="text-lg font-bold text-gray-900 mb-2 block">Notes</label>
+                                <textarea 
+                                    placeholder="Any notes about the parcel?"
+                                    className="w-full min-h-[100px] p-6 bg-white border border-brand-gold/30 rounded-2xl text-lg font-medium outline-none focus:ring-2 focus:ring-brand-gold transition-all"
+                                    value={parcelData.notes}
+                                    onChange={(e) => setParcelData(prev => ({ ...prev, notes: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-lg font-bold text-gray-900 mb-2 block">Special Instructions</label>
+                                <textarea 
+                                    placeholder="Special instructions for the driver?"
+                                    className="w-full min-h-[100px] p-6 bg-white border border-brand-gold/30 rounded-2xl text-lg font-medium outline-none focus:ring-2 focus:ring-brand-gold transition-all"
+                                    value={parcelData.special_instructions}
+                                    onChange={(e) => setParcelData(prev => ({ ...prev, special_instructions: e.target.value }))}
+                                />
+                            </div>
+                          </div>
                       </div>
                   </div>
 
@@ -528,25 +609,8 @@ export default function CustomerDashboardPage() {
                           <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Edit3 size={20} className="text-gray-600" /></button>
                       </div>
                       <div className="space-y-3 pl-8">
-                          <p className="text-xl font-medium"><span className="text-gray-500">Full Name:</span> Naim Doe</p>
-                          <p className="text-xl font-medium"><span className="text-gray-500">Phone:</span> (+12342-543430)</p>
-                      </div>
-                  </div>
-
-                  <div className="space-y-6">
-                      <div className="flex items-center gap-4 text-brand-gold">
-                            <Box size={20} />
-                            <span className="font-bold">Extra Services</span>
-                      </div>
-                      <div className="space-y-4 pl-8">
-                          <label className="flex items-center gap-4 cursor-pointer">
-                              <div className="w-5 h-5 rounded-md bg-black flex items-center justify-center"><Check size={14} className="text-white" /></div>
-                              <span className="text-xl font-medium">Driver</span>
-                          </label>
-                          {/* <label className="flex items-center gap-4 cursor-pointer">
-                              <div className="w-5 h-5 rounded-md border-2 border-gray-300"></div>
-                              <span className="text-xl font-medium text-gray-500">Driver & Helper</span>
-                          </label> */}
+                          <p className="text-xl font-medium"><span className="text-gray-500">Name:</span> {parcelData.pickup_user_name}</p>
+                          <p className="text-xl font-medium"><span className="text-gray-500">Phone:</span> {parcelData.phone_number}</p>
                       </div>
                   </div>
 
@@ -556,7 +620,7 @@ export default function CustomerDashboardPage() {
                             <span className="font-bold">Payment</span>
                       </div>
                       <div className="space-y-4 pl-8">
-                          <p className="text-2xl font-bold">Estimated Price: <span className="text-[#B8860B] italic">$75.00</span></p>
+                          <p className="text-2xl font-bold">Estimated Price: <span className="text-[#B8860B] italic">${parcelData.price}</span></p>
                           <div className="flex gap-8 text-xl font-medium text-gray-500 italic">
                              <span>Stripe</span>
                              <span>Tip</span>
@@ -565,10 +629,11 @@ export default function CustomerDashboardPage() {
                   </div>
 
                   <Button 
-                    onClick={() => setView('booking-confirmed')}
-                    className="w-96 h-14 text-xl font-semibold rounded-[16px] bg-[#B8860B] hover:bg-[#D4A017] shadow-xl mb-20"
+                    onClick={handleConfirmBooking}
+                    disabled={loading}
+                    className="w-96 h-14 text-xl font-semibold rounded-[16px] bg-[#B8860B] hover:bg-[#D4A017] shadow-xl mb-20 disabled:opacity-50"
                   >
-                      Review & Confirm Booking
+                      {loading ? 'Processing...' : 'Review & Confirm Booking'}
                   </Button>
               </div>
           </div>
@@ -579,17 +644,21 @@ export default function CustomerDashboardPage() {
       return (
           <div className="flex flex-col lg:flex-row gap-8">
               <div className="flex-1 max-w-2xl">
-                  {stepHeader('Booking Confirmed!', 'home')}
+                  <div className="flex items-center gap-4 text-3xl font-bold text-gray-900 mb-6">
+                      <Check size={32} className="text-green-500" />
+                      Booking Confirmed!
+                  </div>
                   
                   <div className="space-y-6 mb-12">
                       {[
-                        { label: 'Vehicle:', value: 'Mini Truck' },
-                        { label: 'Pickup:', value: '34 Park Ave' },
-                        { label: 'Drop:', value: '21 Green St' },
-                        { label: 'Date:', value: 'Nov 12, 2025' },
-                        { label: 'Time:', value: '10:00AM - 12:00PM' },
-                        { label: 'Load:', value: 'Medium (Furniture, Electronics)' },
-                        { label: 'Total:', value: '$90.00', isTotal: true },
+                        { label: 'Parcel ID:', value: createdParcel?.parcel_id || 'N/A' },
+                        { label: 'Vehicle:', value: createdParcel?.vehicle_type || 'N/A' },
+                        { label: 'Pickup:', value: createdParcel?.pickup_address || 'N/A' },
+                        { label: 'Drop:', value: createdParcel?.drop_address || 'N/A' },
+                        { label: 'Date:', value: createdParcel?.pickup_date || 'N/A' },
+                        { label: 'Time:', value: createdParcel?.pickup_time || 'N/A' },
+                        { label: 'Parcel Type:', value: createdParcel?.percel_type || 'N/A' },
+                        { label: 'Total:', value: `$${createdParcel?.price || '0.00'}`, isTotal: true },
                       ].map((item) => (
                         <div key={item.label} className="flex text-xl">
                             <span className="w-32 font-bold text-gray-900">{item.label}</span>
@@ -598,43 +667,22 @@ export default function CustomerDashboardPage() {
                       ))}
                   </div>
 
-                  {/* <Button className="w-80 h-16 text-xl font-bold rounded-2xl bg-[#B8860B] hover:bg-[#D4A017] shadow-xl mb-12">
-                      View on Map
-                  </Button> */}
-
                   <div className="space-y-8 mb-12">
                       <div className="flex items-center gap-4 text-brand-gold">
-                            <UserIcon size={20} />
-                            <span className="font-bold">Your Driver</span>
+                            <Info size={20} />
+                            <span className="font-bold">Next Steps</span>
                       </div>
                       <div className="space-y-4 pl-8">
-                          <p className="text-xl font-bold text-gray-800">Name: John Mathew / TAX 2345</p>
-                          <div className="flex gap-8">
-                             <button className="flex items-center gap-2 text-gray-600 font-bold hover:text-brand-gold transition-colors">
-                                <Phone size={20} className="text-brand-gold" /> Call Driver
-                             </button>
-                             <button className="flex items-center gap-2 text-gray-600 font-bold hover:text-brand-gold transition-colors">
-                                <MessageSquare size={20} className="text-brand-gold" /> Chat
-                             </button>
-                          </div>
-                      </div>
-                  </div>
-
-                  <div className="space-y-8">
-                      <div className="flex items-center gap-4 text-brand-gold">
-                            <CreditCard size={20} />
-                            <span className="font-bold">Payment</span>
-                      </div>
-                      <div className="space-y-3 pl-8">
-                          <p className="text-xl font-medium"><span className="text-gray-500 font-bold">Method:</span> Stripe</p>
-                          <p className="text-xl font-medium"><span className="text-gray-500 font-bold">Transaction ID:</span> #GP2345K</p>
-                          <p className="text-xl font-medium"><span className="text-gray-500 font-bold">Status:</span> Unpaid</p>
-                          <p className="text-xl font-medium"><span className="text-gray-500 font-bold">Tip:</span> Unpaid</p>
+                          <p className="text-xl font-medium text-gray-600">Track your parcel from your dashboard. A driver will be assigned soon.</p>
+                          <Button 
+                            onClick={() => setView('home')}
+                            className="w-60 h-14 text-lg font-bold rounded-xl bg-[#B8860B] hover:bg-[#D4A017] shadow-xl"
+                          >
+                            Back to Dashboard
+                          </Button>
                       </div>
                   </div>
               </div>
-
-              
           </div>
       );
   }
@@ -642,7 +690,7 @@ export default function CustomerDashboardPage() {
    return (
     <div className="max-w-5xl">
         <div className="mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back, Naim!</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome Back, {session?.user?.name || 'Customer'}!</h1>
             <p className="text-xl text-gray-500 font-medium">Ready to book your next move?</p>
         </div>
 

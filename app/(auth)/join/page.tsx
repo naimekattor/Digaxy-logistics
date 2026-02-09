@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Primitives';
 export default function JoinAsPage() {
   const router = useRouter();
 
-  const handleRoleSelect = (role: 'driver' | 'mover' | 'helper') => {
+  const handleRoleSelect = (role: 'driver' | 'customer' | 'helper') => {
     // Redirect to signup and pass the role in the URL
     router.push(`/signup?role=${role}`);
   };
@@ -34,10 +34,10 @@ export default function JoinAsPage() {
         {/* Mover Option */}
         <Button 
           variant="outline"
-          onClick={() => handleRoleSelect('mover')}
+          onClick={() => handleRoleSelect('customer')}
           className="w-full h-16 text-lg font-semibold border-slate-300 text-[#1A2E35]  rounded-xl transition-all"
         >
-          Mover
+          Customer
         </Button>
         <Button 
           variant="outline"

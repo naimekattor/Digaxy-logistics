@@ -33,17 +33,13 @@ export default function Sidebar({ role }: SidebarProps) {
 
   // Define navigation based on role
   const getNavItems = () => {
-    const baseItems = [
-      { label: 'Notification', href: `/${role}/notifications`, icon: Bell },
-      { label: 'Setting', href: `/${role}/settings`, icon: Settings },
-    ];
-
     if (role === UserRole.DRIVER) {
       return [
         { label: 'Home', href: `/${role}`, icon: Home },
         { label: 'Earnings', href: `/${role}/earnings`, icon: Wallet },
         { label: 'History', href: `/${role}/history`, icon: History },
-        ...baseItems
+        { label: 'Notifications', href: `/${role}/notifications`, icon: Bell },
+        { label: 'Settings', href: `/${role}/settings`, icon: Settings },
       ];
     }
 
@@ -52,7 +48,8 @@ export default function Sidebar({ role }: SidebarProps) {
         { label: 'Home', href: `/${role}`, icon: Home },
         { label: 'Earnings', href: `/${role}/earnings`, icon: Wallet },
         { label: 'Progress', href: `/${role}/progress`, icon: History },
-        ...baseItems
+        { label: 'Notifications', href: `/${role}/notifications`, icon: Bell },
+        { label: 'Settings', href: `/${role}/settings`, icon: Settings },
       ];
     }
 
@@ -61,12 +58,12 @@ export default function Sidebar({ role }: SidebarProps) {
         { label: 'Home', href: `/${role}`, icon: Home },
         { label: 'Bookings', href: `/${role}/bookings`, icon: History },
         { label: 'Cities', href: `/${role}/cities`, icon: MapPin },
-        { label: 'Notification', href: `/${role}/notifications`, icon: Bell },
-        { label: 'Setting', href: `/${role}/settings`, icon: Settings },
+        { label: 'Notifications', href: `/${role}/notifications`, icon: Bell },
+        { label: 'Settings', href: `/${role}/settings`, icon: Settings },
       ];
     }
     
-    return baseItems;
+    return [];
   };
 
   const navItems = getNavItems();
@@ -97,7 +94,7 @@ export default function Sidebar({ role }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 px-8 py-4 space-y-4">
-          {navItems.map((item) => {
+          {navItems?.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
             
