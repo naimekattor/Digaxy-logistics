@@ -84,7 +84,8 @@ export default function CustomerDashboardPage() {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [createdParcel, setCreatedParcel] = useState<ParcelResponse | null>(null);
-
+  console.log(session.accessToken);
+  
   // Parcel creation state
   const [parcelData, setParcelData] = useState({
     pickup_date: new Date().toISOString().split('T')[0],
