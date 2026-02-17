@@ -27,6 +27,7 @@ export async function getPendingParcels(token: string, page: number = 1): Promis
         {
             headers: {
                 "Authorization": `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
             },
         }
     );
@@ -40,6 +41,7 @@ export async function getDeliveredParcels(token: string, page: number = 1): Prom
         {
             headers: {
                 "Authorization": `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
             },
         }
     );
@@ -53,6 +55,7 @@ export async function getCancelledParcels(token: string, page: number = 1): Prom
         {
             headers: {
                 "Authorization": `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
             },
         }
     );

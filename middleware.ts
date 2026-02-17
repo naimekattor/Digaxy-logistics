@@ -15,10 +15,32 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Driver approval gate
-  if (token.role === "driver" && token.driverStatus !== "Approved") {
-    return NextResponse.redirect(new URL("/pending", req.url));
+  // Allow approved page for approved drivers
+  if (token.role === "driver" && token.driverStatus === "Approved") {
+    if (pathname === "/driver/pending") {
+      return NextResponse.redirect(new URL("/driver/approved", req.url));
+    }
+    // Don't redirect if already on /driver/approved
   }
+
+
+   // ---------------------------
+  // Helper approval gate
+  // ---------------------------
+  if (token.role === "helper") {
+    if (token.helperStatus !== "Approved") {
+      // allow pending page
+      if (pathname !== "/helper/pending") {
+        return NextResponse.redirect(new URL("/helper/pending", req.url));
+      }
+    } else {
+      // allow approved page
+      if (pathname === "/helper/pending") {
+        return NextResponse.redirect(new URL("/helper/approved", req.url));
+      }
+    }
+  }
+
 
   // Role based protection
   if (pathname.startsWith("/driver") && token.role !== "driver") {
