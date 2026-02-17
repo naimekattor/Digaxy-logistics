@@ -13,13 +13,13 @@ export default function HelperApprovedPage() {
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
         {/* Top accent bar */}
-        <div className="h-2 bg-gradient-to-r from-teal-400 via-cyan-500 to-sky-500" />
+        <div className="h-2 bg-brand-gold" />
 
         <div className="p-8 md:p-10">
           {/* Success Icon */}
-          <div className="mx-auto w-20 h-20 rounded-full bg-teal-50 flex items-center justify-center mb-6">
+          <div className="mx-auto w-20 h-20 rounded-full bg-brand-gold/10 flex items-center justify-center mb-6">
             <CheckCircle2
-              className="w-10 h-10 text-teal-600"
+              className="w-10 h-10 text-brand-gold"
               strokeWidth={2}
             />
           </div>
@@ -37,7 +37,7 @@ export default function HelperApprovedPage() {
           {/* Info Card */}
           <div className="bg-slate-50 rounded-xl p-6 mb-8 border border-slate-100">
             <div className="flex items-start gap-4">
-              <Smartphone className="w-6 h-6 text-teal-600 mt-1" />
+              <Smartphone className="w-6 h-6 text-brand-gold mt-1" />
               <div>
                 <h3 className="font-medium text-slate-800 mb-1">
                   Start receiving jobs
@@ -54,7 +54,7 @@ export default function HelperApprovedPage() {
           <div className="space-y-4 mb-8">
             <a
               href="#"
-              className="flex items-center justify-center gap-2 w-full bg-black text-white font-medium py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+              className="flex items-center justify-center gap-2 w-full bg-brand-gold text-white font-medium py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <Download className="w-5 h-5" />
               Download on Google Play
@@ -62,7 +62,7 @@ export default function HelperApprovedPage() {
 
             <a
               href="#"
-              className="flex items-center justify-center gap-2 w-full bg-slate-900 text-white font-medium py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+              className="flex items-center justify-center gap-2 w-full bg-brand-gold text-white font-medium py-3.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <Download className="w-5 h-5" />
               Download on App Store

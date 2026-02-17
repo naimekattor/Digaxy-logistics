@@ -40,10 +40,10 @@ export default function VehicleStep() {
              required
            >
              <option value="">Select Type</option>
-             <option value="truck">Truck</option>
-             <option value="van">Van</option>
-             <option value="bike">Bike</option>
-             <option value="Car">Car</option>
+             <option value="Van">VAN</option>
+             <option value="Pickup">PICKUP</option>
+             <option value="Minibox">MINIBOX</option>
+             <option value="Bigbox">BIGBOX</option>
            </select>
         </div>
 

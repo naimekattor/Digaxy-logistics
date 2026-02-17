@@ -7,6 +7,7 @@ export interface DriverSignupState {
     password?: string;
     confirmPassword?: string;
     email?: string;
+    isOtpVerified?: boolean;
   };
 
   licenseInfo: {
@@ -34,30 +35,30 @@ export interface DriverSignupState {
   ) => void;
   reset: () => void;
 }
-export const useDriverSignupStore=create<DriverSignupState>((set)=>({
-    step:1,
-    basicInfo:{},
-    licenseInfo:{},
-    vehicleInfo:{},
-    identityInfo:{},
-    setStep:(step)=>set({step}),
-    updateData:(key,value)=>
-        set((state)=>
-        ({
-            ...state,
-            [key]:{
-                ...(state[key] as object),
-                ...value
-            }
-        })),
-        reset:()=>
-            set({
-                step:1,
-                basicInfo: {},
+export const useDriverSignupStore = create<DriverSignupState>((set) => ({
+  step: 1,
+  basicInfo: {},
+  licenseInfo: {},
+  vehicleInfo: {},
+  identityInfo: {},
+  setStep: (step) => set({ step }),
+  updateData: (key, value) =>
+    set((state) =>
+    ({
+      ...state,
+      [key]: {
+        ...(state[key] as object),
+        ...value
+      }
+    })),
+  reset: () =>
+    set({
+      step: 1,
+      basicInfo: {},
       licenseInfo: {},
       vehicleInfo: {},
       identityInfo: {},
-            }),
+    }),
 
 
 

@@ -49,19 +49,21 @@ export default function DriverOnboardingWizard() {
   };
 
   const handleSubmit = async () => {
-  try {
-    setLoading(true);
-    const data = useDriverSignupStore.getState();
-    await submitDriverSignup(data);
+    try {
+      setLoading(true);
+      setError('');
+      
+      const data = useDriverSignupStore.getState();
+      await submitDriverSignup(data);
 
-    router.push("/pending");
-  } catch (err) {
-    console.error(err);
-    alert("Driver application failed");
-  }finally{
-    setLoading(false);
-  }
-};
+      router.push(`/verify-otp?email=${basicInfo.email}&role=driver`);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "Driver application failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderStep = () => {
     switch (step) {

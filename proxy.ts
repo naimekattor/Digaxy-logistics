@@ -28,18 +28,12 @@ export async function proxy(req: NextRequest) {
   // Helper approval gate
   // ---------------------------
   if (token.role === "helper") {
-    if (token.helperStatus !== "Approved") {
-      // allow pending page
-      if (pathname !== "/helper") {
-        return NextResponse.redirect(new URL("/helper/pending", req.url));
-      }
-    } else {
-      // allow approved page
-      if (pathname === "/helper/pending") {
+    
+      if (pathname === "/helper") {
         return NextResponse.redirect(new URL("/helper/approved", req.url));
       }
     }
-  }
+  
 
 
   // Role based protection

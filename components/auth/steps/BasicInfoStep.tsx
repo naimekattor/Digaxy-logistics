@@ -7,9 +7,7 @@ import { useDriverSignupStore } from '@/stores/driverSignup.store';
 
 export default function BasicInfoStep() {
   const [showPass, setShowPass] = React.useState(false);
-  const{basicInfo,updateData,setStep}=useDriverSignupStore();
-
-  console.log(basicInfo);
+  const { basicInfo, updateData } = useDriverSignupStore();
 
   return (
     <div className="space-y-4">
