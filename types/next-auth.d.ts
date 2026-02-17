@@ -1,14 +1,15 @@
 import NextAuth from "next-auth";
+import { UserRole } from "./index";
 
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
-    role?: string;
+    role?: UserRole;
     driverStatus?: string;
     user: {
       id: string;
       username?: string;
-      role: "customer" | "driver" | "helper";
+      role: UserRole;
       email: string;
       profile_picture?: string | null;
     };
@@ -17,7 +18,7 @@ declare module "next-auth" {
   interface User {
     id: string;
     name?: string;
-    role: string;
+    role: UserRole;
     driverStatus?: string;
     accessToken: string;
     refreshToken?: string;
@@ -28,7 +29,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
-    role?: string;
+    role?: UserRole;
     driverStatus?: string;
     accessToken?: string;
     refreshToken?: string;

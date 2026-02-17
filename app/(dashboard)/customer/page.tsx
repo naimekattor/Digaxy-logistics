@@ -691,7 +691,7 @@ export default function CustomerDashboardPage() {
    return (
     <div className="max-w-5xl">
         <div className="mb-4">
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back, {session?.user?.name || 'Customer'}!</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome Back, {session?.user?.username || 'Customer'}!</h1>
             <p className="text-xl text-gray-500 font-medium">Ready to book your next move?</p>
         </div>
 

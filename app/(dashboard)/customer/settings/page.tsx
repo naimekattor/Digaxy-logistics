@@ -13,7 +13,7 @@ export default function CustomerSettingsPage() {
   const [isAdminSupportOpen, setIsAdminSupportOpen] = useState(false);
 
   // Fallback data if session is not available
-  const userName = (session?.user as any)?.username || session?.user?.name || "User";
+  const userName = (session?.user as any)?.username || session?.user?.username || "User";
   const userEmail = session?.user?.email || "";
   const profilePicture = (session?.user as any)?.profile_picture || "https://picsum.photos/200";
 

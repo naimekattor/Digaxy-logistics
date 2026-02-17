@@ -107,7 +107,7 @@ export const Navbar = () => {
                 )}>
                   <div className="px-4 py-3 border-b border-gray-50 mb-2">
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Account</p>
-                    <p className="text-sm font-black text-gray-900 truncate">{(session.user as any)?.username || session.user?.name}</p>
+                    <p className="text-sm font-black text-gray-900 truncate">{(session.user as any)?.username || session.user?.username}</p>
                   </div>
                   
                   <Link 
@@ -168,7 +168,7 @@ export const Navbar = () => {
                   )}
                 </div>
                 <div>
-                  <p className="text-xl font-black text-gray-900">{(session.user as any)?.username || session.user?.name}</p>
+                  <p className="text-xl font-black text-gray-900">{(session.user as any)?.username || session.user?.username}</p>
                   <p className="text-sm font-bold text-brand-gold capitalize">{session.role}</p>
                 </div>
              </div>

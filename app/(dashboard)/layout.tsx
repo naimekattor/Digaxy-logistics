@@ -4,6 +4,7 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
+import { UserRole } from '@/types';
 
 export default function DashboardLayout({
   children,
@@ -63,7 +64,7 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#FDFBF7]">
-      <Sidebar role={session.role} />
+      <Sidebar role={session.role || UserRole.CUSTOMER} />
       <main className="lg:pl-64 min-h-screen transition-all duration-300">
         <div className="container mx-auto p-6 pt-20 lg:pt-8 max-w-6xl">
           {children}

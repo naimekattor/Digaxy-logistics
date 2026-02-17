@@ -14,7 +14,7 @@ export default function DriverDashboardPage() {
     <div className="max-w-5xl">
         {/* Header Section */}
         <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900">Welcome Back, {session?.user?.name?.split(' ')[0] || 'Naim'}!</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Welcome Back, {session?.user?.username?.split(' ')[0] || 'Naim'}!</h1>
             <p className="text-gray-500 mt-1 font-medium">You're ready to start earning.</p>
         </div>
 

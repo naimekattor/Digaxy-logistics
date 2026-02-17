@@ -241,8 +241,8 @@ export default function PartnerPage() {
                           fontFamily: "inherit",
                           transition: "background 0.15s",
                         }}
-                        onMouseEnter={(e) => { if (loc !== location) e.target.style.background = "#f9f7f3"; }}
-                        onMouseLeave={(e) => { e.target.style.background = loc === location ? "#f5f0e8" : "transparent"; }}
+                        onMouseEnter={(e) => { if (loc !== location) (e.target as HTMLElement).style.background = "#f9f7f3"; }}
+                        onMouseLeave={(e) => { (e.target as HTMLElement).style.background = loc === location ? "#f5f0e8" : "transparent"; }}
                       >
                         {loc}
                       </button>

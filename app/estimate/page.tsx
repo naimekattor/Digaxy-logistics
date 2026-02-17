@@ -2,7 +2,7 @@ import React from 'react';
 import { ChevronDown, Star, MapPin, Navigation } from 'lucide-react';
 import MainLayout from '@/components/MainLayout';
 
-const ServiceType = ({ image, name, description }) => (
+const ServiceType = ({ image, name, description }: { image?: any; name: string; description: string }) => (
   <div className="flex flex-col items-center p-6 border border-amber-100 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow">
     <div className="h-16 mb-4 flex items-center justify-center">
       {/* Placeholder for truck illustrations */}
