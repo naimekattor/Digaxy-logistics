@@ -6,6 +6,7 @@ export async function getProfile(token: string): Promise<UserProfile> {
         {
             headers: {
                 "Authorization": `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
             },
         }
     );

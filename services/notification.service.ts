@@ -10,6 +10,7 @@ export async function getNotifications(
         {
             headers: {
                 "Authorization": `Bearer ${token}`,
+                'ngrok-skip-browser-warning': 'true'
             },
         }
     );

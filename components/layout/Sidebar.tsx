@@ -124,7 +124,7 @@ export default function Sidebar({ role }: SidebarProps) {
             <div className="w-8 h-8 flex items-center justify-center text-brand-gold">
                 <User size={20} />
             </div>
-            <span className="font-medium text-gray-900">{session?.user?.name || "Naim Doe"}</span>
+            <span className="font-medium text-gray-900">{session?.user?.username || "Naim Doe"}</span>
           </div>
           
           <button 

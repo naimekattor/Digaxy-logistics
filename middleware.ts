@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest) {
 
   // Allow approved page for approved drivers
   if (token.role === "driver" && token.driverStatus === "Approved") {
-    if (pathname === "/driver/pending") {
+    if (pathname === "/driver") {
       return NextResponse.redirect(new URL("/driver/approved", req.url));
     }
     // Don't redirect if already on /driver/approved
@@ -30,7 +30,7 @@ export async function middleware(req: NextRequest) {
   if (token.role === "helper") {
     if (token.helperStatus !== "Approved") {
       // allow pending page
-      if (pathname !== "/helper/pending") {
+      if (pathname !== "/helper") {
         return NextResponse.redirect(new URL("/helper/pending", req.url));
       }
     } else {

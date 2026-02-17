@@ -7,9 +7,10 @@ declare module "next-auth" {
     driverStatus?: string;
     user: {
       id: string;
-      name?: string;
+      username?: string;
       role: "customer" | "driver" | "helper";
       email: string;
+      profile_picture?: string | null;
     };
   }
 
