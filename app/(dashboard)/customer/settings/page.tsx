@@ -9,9 +9,9 @@ export default function CustomerSettingsPage() {
     <div className=" mx-auto  min-h-screen">
       {/* Header */}
       <div className="bg-white px-6 py-4 flex items-center gap-3 border-b border-gray-100">
-        <button className="p-1">
+        {/* <button className="p-1">
           <ChevronLeft size={24} className="text-gray-900" />
-        </button>
+        </button> */}
         <h1 className="text-lg font-bold text-gray-900">Settings</h1>
       </div>
 

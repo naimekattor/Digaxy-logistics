@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Calendar, CircleDollarSign, Zap, Truck, User, Phone, Mail, MapPin } from 'lucide-react';
 import MainLayout from '@/components/MainLayout';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const BenefitCard = ({ icon: Icon, title, description }) => (
   <div className="bg-white p-8 rounded-2xl border border-orange-100 shadow-sm flex flex-col items-start text-left">
@@ -105,9 +106,11 @@ export default function PartnerPage() {
 
             
           </form> */}
+          <Link href={"/join"}>
           <button className="w-full bg-[#A97200]  text-white font-bold py-4 rounded-xl transition-colors mt-4">
               Get Started
-            </button>
+            </button></Link>
+          
         </div>
       </section>
 

@@ -23,22 +23,24 @@ export default function JoinAsPage() {
       </div>
 
       <div className="space-y-4 w-full">
+        {/* Mover Option */}
+        <Button 
+          
+          onClick={() => handleRoleSelect('customer')}
+          className=" w-full bg-[#A37800] h-16 text-lg font-semibold rounded-xl transition-all"
+        >
+          Customer
+        </Button>
         {/* Driver Option */}
         <Button 
+        variant="outline"
           onClick={() => handleRoleSelect('driver')}
-          className="w-full bg-[#A37800] hover:bg-[#866200] h-16 text-lg font-semibold rounded-xl transition-all"
+          className="w-full h-16 text-lg font-semibold border-slate-300 text-[#1A2E35]  rounded-xl transition-all"
         >
           Driver
         </Button>
 
-        {/* Mover Option */}
-        <Button 
-          variant="outline"
-          onClick={() => handleRoleSelect('customer')}
-          className="w-full h-16 text-lg font-semibold border-slate-300 text-[#1A2E35]  rounded-xl transition-all"
-        >
-          Customer
-        </Button>
+        
         <Button 
           variant="outline"
           onClick={() => handleRoleSelect('helper')}
