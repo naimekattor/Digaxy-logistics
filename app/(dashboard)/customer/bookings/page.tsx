@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react';
 import { getPendingParcels, getDeliveredParcels, getCancelledParcels, getAcceptedParcels, getOnTheWayParcels } from '@/services/parcel.service';
 import { ParcelResponse, ParcelListResponse } from '@/types/parcel';
 import { toast } from 'sonner';
+import Swal from 'sweetalert2';
 
 type Tab = 'Created' | 'Accepted' | 'On the Way' | 'Completed' | 'Cancelled';
 
@@ -113,14 +114,14 @@ export default function CustomerBookingsPage() {
 
         {!isCancelled && activeTab === 'On the Way' && (
             <div className="flex gap-4 pt-2">
-                <Button className="w-40 h-12 rounded-xl bg-brand-gold hover:bg-[#D4A017] text-md font-bold text-white shadow-lg shadow-brand-gold/20">Track</Button>
+                <Button onClick={()=>router.push(`/customer/live-tracking/${parcel.parcel_id}`)} className="w-40 h-12 rounded-xl bg-brand-gold hover:bg-[#D4A017] text-md font-bold text-white shadow-lg shadow-brand-gold/20">Track</Button>
                 {/* <Button variant="ghost" className="w-40 h-12 rounded-xl border border-gray-200 text-md font-bold text-gray-600 hover:bg-gray-50">Cancel</Button> */}
             </div>
         )}
         {!isCancelled && activeTab === 'Created' && (
             <div className="flex gap-4 pt-2">
                 {/* <Button className="w-40 h-12 rounded-xl bg-brand-gold hover:bg-[#D4A017] text-md font-bold text-white shadow-lg shadow-brand-gold/20">Track</Button> */}
-                <Button variant="ghost" className="w-40 h-12 rounded-xl border border-gray-200 text-md font-bold text-gray-600 hover:bg-gray-50">Cancel</Button>
+                <Button onClick={()=>handleCancelParcel(parcel.id)} variant="ghost" className="w-40 h-12 rounded-xl border border-gray-200 text-md font-bold text-gray-600 hover:bg-gray-50">Cancel</Button>
             </div>
         )}
 
@@ -132,6 +133,62 @@ export default function CustomerBookingsPage() {
         )}
     </Card>
   );
+
+
+const handleCancelParcel = async (parcelId: number) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33", 
+      cancelButtonColor: "#A37800", 
+      confirmButtonText: "Yes, cancel it!",
+      cancelButtonText: "No, keep it"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/customer/parcel/cancel/${parcelId}/`,
+                {
+                  method: "PATCH",
+                  headers: {
+                    Authorization: `Bearer ${session?.accessToken}`,
+                    "ngrok-skip-browser-warning": "true",
+                  },
+                },
+            );
+        
+            if (res.ok) {
+                Swal.fire({
+                    title: "Cancelled!",
+                    text: "Your booking has been cancelled.",
+                    icon: "success",
+                    confirmButtonColor: "#A37800"
+                });
+                fetchParcels(); // Refresh list
+            } else {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to cancel booking.",
+                    icon: "error",
+                    confirmButtonColor: "#A37800"
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire({
+                title: "Error!",
+                text: "Something went wrong.",
+                icon: "error",
+                confirmButtonColor: "#A37800"
+            });
+        }
+      }
+    });
+};
+
+  
 
   return (
     <div className="max-w-4xl px-4 pb-20">

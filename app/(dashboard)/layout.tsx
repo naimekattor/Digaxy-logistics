@@ -5,7 +5,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import { UserRole } from '@/types';
-import SocketNotification from '@/components/SocketNotification';
 import { useNotificationStore } from '@/stores/notificationStore';
 import { useTrackingStore } from '@/stores/trackingStore';
 
@@ -29,12 +28,12 @@ export default function DashboardLayout({
 
 
   //live tracking websocket
-  useEffect(()=>{
-    const token = session?.accessToken;
-    if (token) {
-      connectTracker(token);
-    }
-  },[])
+  // useEffect(()=>{
+  //   const token = session?.accessToken;
+  //   if (token) {
+  //     connectTracker(token);
+  //   }
+  // },[])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -91,7 +90,6 @@ export default function DashboardLayout({
           {children}
         </div>
       </main>
-      <SocketNotification/>
     </div>
   );
 }
