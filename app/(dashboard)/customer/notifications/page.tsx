@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { 
     Box, Truck, CreditCard, Gift, 
     RefreshCw, Rocket, ChevronLeft,
@@ -10,14 +10,13 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { getNotifications } from '@/services/notification.service';
 import { Notification } from '@/types/notification';
+import { useNotificationStore } from '@/stores/notificationStore';
 
 export default function CustomerNotificationsPage() {
     const router = useRouter();
     const { data: session, status } = useSession();
-    const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
     const fetchNotifications = useCallback(async () => {
         if (session?.accessToken) {
             try {
@@ -25,7 +24,6 @@ export default function CustomerNotificationsPage() {
                 setError(null);
                 // Explicitly fetching page 1 with page_size 2 as requested
                 const response = await getNotifications(session.accessToken as string, 1, 2);
-                setNotifications(response.results);
             } catch (err: any) {
                 setError(err.message || 'Failed to load notifications');
             } finally {
@@ -80,8 +78,24 @@ export default function CustomerNotificationsPage() {
         );
     };
 
+const notifications = useNotificationStore(
+    (state) => state.notifications
+  );
+
+  console.log(notifications);
+
+  const connected = useNotificationStore((state) => state.connected);
+
+  useEffect(() => {
+    console.log("WebSocket connected:", connected);
+  }, [connected]);
+  
+
     return (
         <div className="max-w-3xl px-6 py-12">
+            <div>
+      Status: {connected ? '🟢 Connected' : '🔴 Disconnected'}
+    </div>
             <div className="flex justify-between items-center mb-12">
                 <button 
                     onClick={() => router.back()}

@@ -36,8 +36,8 @@ const locations = [
 const vehicleTypes = [
     { id: 'pickup', name: 'Pickup', price: '$42.92 + $1.62', detail: 'per labor min', imageSrc: "/images/pickup_truck.png" },
     { id: 'van', name: 'Van', price: '$77 + $2.02', detail: 'per labor min', imageSrc: "/images/van.png" },
-    { id: 'box', name: 'Mini Box Truck', price: '$144.51 + $2.30', detail: 'per labor min', imageSrc: "/images/mini_box_truck.png" },
-    { id: 'box26feet', name: '26 Feet Box Truck', price: '$230 + $4.99', detail: 'per labor min', imageSrc: "/images/26Feet_box_truck.png" },
+    { id: 'box', name: 'Minibox', price: '$144.51 + $2.30', detail: 'per labor min', imageSrc: "/images/mini_box_truck.png" },
+    { id: 'box26feet', name: 'Bigbox', price: '$230 + $4.99', detail: 'per labor min', imageSrc: "/images/26Feet_box_truck.png" },
 ];
 
 const services = [
@@ -101,8 +101,8 @@ export default function CustomerDashboardPage() {
     notes: '',
     special_instructions: '',
     percel_type: 'Medium',
-    latitude: '0.0',
-    longitude: '0.0',
+    latitude: '23.78',
+    longitude: '90.41',
     estimated_distance_km: '10',
     estimated_time_minutes: '30'
   });

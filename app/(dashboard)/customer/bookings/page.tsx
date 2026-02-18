@@ -10,14 +10,14 @@ import {
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { getPendingParcels, getDeliveredParcels, getCancelledParcels } from '@/services/parcel.service';
+import { getPendingParcels, getDeliveredParcels, getCancelledParcels, getAcceptedParcels, getOnTheWayParcels } from '@/services/parcel.service';
 import { ParcelResponse, ParcelListResponse } from '@/types/parcel';
 import { toast } from 'sonner';
 
-type Tab = 'Active' | 'Completed' | 'Cancelled';
+type Tab = 'Created' | 'Accepted' | 'On the Way' | 'Completed' | 'Cancelled';
 
 export default function CustomerBookingsPage() {
-  const [activeTab, setActiveTab] = useState<Tab>('Active');
+  const [activeTab, setActiveTab] = useState<Tab>('Created');
   const [parcels, setParcels] = useState<ParcelResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -26,7 +26,7 @@ export default function CustomerBookingsPage() {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const tabs: Tab[] = ['Active', 'Completed', 'Cancelled'];
+  const tabs: Tab[] = ['Created','Accepted','On the Way', 'Completed', 'Cancelled'];
 
   const fetchParcels = async () => {
     if (!session?.accessToken) return;
@@ -34,8 +34,14 @@ export default function CustomerBookingsPage() {
     try {
       let response: ParcelListResponse;
       switch (activeTab) {
-        case 'Active':
+        case 'Created':
           response = await getPendingParcels(session.accessToken, page);
+          break;
+        case 'Accepted':
+          response = await getAcceptedParcels(session.accessToken, page);
+          break;
+        case 'On the Way':
+          response = await getOnTheWayParcels(session.accessToken, page);
           break;
         case 'Completed':
           response = await getDeliveredParcels(session.accessToken, page);
@@ -105,9 +111,15 @@ export default function CustomerBookingsPage() {
            ${parcel.price} <span className="mx-2 text-gray-200">|</span> <span className="text-gray-500 font-medium">Status:</span> {parcelStatusDisplay(parcel.delivery_status)}
         </div>
 
-        {!isCancelled && activeTab === 'Active' && (
+        {!isCancelled && activeTab === 'On the Way' && (
             <div className="flex gap-4 pt-2">
                 <Button className="w-40 h-12 rounded-xl bg-brand-gold hover:bg-[#D4A017] text-md font-bold text-white shadow-lg shadow-brand-gold/20">Track</Button>
+                {/* <Button variant="ghost" className="w-40 h-12 rounded-xl border border-gray-200 text-md font-bold text-gray-600 hover:bg-gray-50">Cancel</Button> */}
+            </div>
+        )}
+        {!isCancelled && activeTab === 'Created' && (
+            <div className="flex gap-4 pt-2">
+                {/* <Button className="w-40 h-12 rounded-xl bg-brand-gold hover:bg-[#D4A017] text-md font-bold text-white shadow-lg shadow-brand-gold/20">Track</Button> */}
                 <Button variant="ghost" className="w-40 h-12 rounded-xl border border-gray-200 text-md font-bold text-gray-600 hover:bg-gray-50">Cancel</Button>
             </div>
         )}
@@ -140,7 +152,7 @@ export default function CustomerBookingsPage() {
                         setPage(1);
                     }}
                     className={cn(
-                        "px-8 py-3 rounded-full text-lg font-bold transition-all border",
+                        "px-7 py-2.5 rounded-full text-[16px] font-bold transition-all border",
                         activeTab === tab 
                             ? "bg-gray-900 border-gray-900 text-white shadow-lg shadow-gray-200" 
                             : "bg-white border-gray-100 text-gray-500 hover:border-gray-200"
@@ -278,7 +290,8 @@ const DetailItem = ({ label, value }: { label: string, value: string }) => (
 
 const parcelStatusDisplay = (status: string) => {
     switch (status) {
-        case 'Pending': return 'Pending Confirmation';
+        case 'Created': return 'Created ';
+        case 'Accepted': return 'Accepted';
         case 'On the way': return 'En Route';
         case 'Delivered': return 'Completed';
         case 'Cancelled': return 'Cancelled';

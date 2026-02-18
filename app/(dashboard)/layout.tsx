@@ -1,10 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import { UserRole } from '@/types';
+import SocketNotification from '@/components/SocketNotification';
+import { useNotificationStore } from '@/stores/notificationStore';
+import { useTrackingStore } from '@/stores/trackingStore';
 
 export default function DashboardLayout({
   children,
@@ -14,8 +17,26 @@ export default function DashboardLayout({
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
+  const connect = useNotificationStore((state) => state.connect);
+  const connectTracker = useTrackingStore((state) => state.connect);
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const token = session?.accessToken;
+    if (token) {
+      connect(token);
+    }
+  }, []);
+
+
+  //live tracking websocket
+  useEffect(()=>{
+    const token = session?.accessToken;
+    if (token) {
+      connectTracker(token);
+    }
+  },[])
+
+  useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login');
     }
@@ -70,6 +91,7 @@ export default function DashboardLayout({
           {children}
         </div>
       </main>
+      <SocketNotification/>
     </div>
   );
 }
