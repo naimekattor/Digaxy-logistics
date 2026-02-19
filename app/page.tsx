@@ -209,40 +209,32 @@ export default function LandingPage() {
               {/* Horizontal Sticky Booking Bar (Home only) */}
               <div className="max-content mx-auto relative z-20">
                 <div className="p-4 md:p-6  grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                      <MapPin size={16} /> Pickup Location
+                  <div className="flex items-center gap-2 bg-[#FDFBF7] border border-[#E8DFC5] rounded-xl py-3 px-4 text-sm text-gray-900 focus-within:ring-2 focus-within:ring-[#A87900] transition-all">
+  <MapPin size={16} className="text-gray-600 shrink-0" />
+  <input
+    type="text"
+    placeholder="Pickup Location"
+    className="w-full bg-transparent outline-none font-normal"
+  />
+</div>
+
+                  <div className="flex items-center gap-2 bg-[#FDFBF7] border border-[#E8DFC5] rounded-xl py-3 px-4 text-sm font-bold text-gray-900 focus-within:ring-2 focus-within:ring-[#A87900] transition-all outline-none">
+  <MapPin size={16} className="text-gray-600 shrink-0" />
+  <input
+    type="text"
+    placeholder="Drop Location"
+    className="w-full bg-transparent outline-none font-normal"
+  />
+</div>
+
+                  <Button className="space-y-2">
+                    <label className="flex items-center gap-2 text-sm font-bold text-white">
+                      <MapPin size={16} /> Price
                     </label>
-                    <input type="text" placeholder="Denver, CO" className="w-full bg-[#FDFBF7] border border-[#E8DFC5] rounded-xl py-3 px-4 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-[#A87900] transition-all outline-none" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                      <MapPin size={16} /> Drop-off Location
-                    </label>
-                    <input type="text" placeholder="Drop Location" className="w-full bg-[#FDFBF7] border border-[#E8DFC5] rounded-xl py-3 px-4 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-[#A87900] transition-all outline-none" />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                      <Calendar size={16} /> Date
-                    </label>
-                    <div className="relative">
-                      <input type="date" className="w-full bg-[#FDFBF7] border border-[#E8DFC5] rounded-xl py-3 px-4 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-[#A87900] transition-all outline-none appearance-none" />
-                      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                        <ArrowRight size={14} className="rotate-90" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-bold text-gray-700">
-                      <Clock size={16} /> Time
-                    </label>
-                    <div className="relative">
-                      <input type="time" className="w-full bg-[#FDFBF7] border border-[#E8DFC5] rounded-xl py-3 px-4 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-[#A87900] transition-all outline-none appearance-none" />
-                       <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                        <ArrowRight size={14} className="rotate-90" />
-                      </div>
-                    </div>
-                  </div>
+                  
+                  </Button>
+                  
+                  
                   <Button className="h-[50px] bg-transparent border-none text-gray-400 font-bold hover:bg-transparent hover:text-gray-900 justify-start px-0 w-auto lg:hidden">
                     Looking for a quote?
                   </Button>
