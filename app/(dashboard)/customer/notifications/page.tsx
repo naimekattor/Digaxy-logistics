@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { 
     Box, Truck, CreditCard, Gift, 
     RefreshCw, Rocket, ChevronLeft,
@@ -17,13 +17,20 @@ export default function CustomerNotificationsPage() {
     const { data: session, status } = useSession();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const notifications = useNotificationStore((state) => state.notifications);
+    const connected = useNotificationStore((state) => state.connected);
+    const connect = useNotificationStore((state) => state.connect);
+    const setNotifications = useNotificationStore((state) => state.setNotifications);
+
     const fetchNotifications = useCallback(async () => {
         if (session?.accessToken) {
             try {
                 setLoading(true);
                 setError(null);
-                // Explicitly fetching page 1 with page_size 2 as requested
-                const response = await getNotifications(session.accessToken as string, 1, 2);
+                // Fetching page 2 with page_size 1 as requested by user
+                const response = await getNotifications(session.accessToken as string, 2, 1);
+                setNotifications(response.results);
             } catch (err: any) {
                 setError(err.message || 'Failed to load notifications');
             } finally {
@@ -33,7 +40,13 @@ export default function CustomerNotificationsPage() {
             setLoading(false);
             setError('Please sign in to view your notifications');
         }
-    }, [session?.accessToken, status]);
+    }, [session?.accessToken, status, setNotifications]);
+
+    useEffect(() => {
+        if (session?.accessToken) {
+            connect(session.accessToken as string);
+        }
+    }, [session?.accessToken, connect]);
 
     useEffect(() => {
         if (status !== 'loading') {
@@ -53,9 +66,9 @@ export default function CustomerNotificationsPage() {
         }
     };
 
-    const NotificationItem = ({ title, message, notification_type, created_at }: Notification) => {
-        const Icon = getIcon(notification_type);
-        const date = new Date(created_at).toLocaleDateString(undefined, { 
+    const NotificationItem = (n: Notification) => {
+        const Icon = getIcon(n.notification_type);
+        const date = new Date(n.created_at).toLocaleDateString(undefined, { 
             month: 'short', 
             day: 'numeric',
             hour: '2-digit',
@@ -63,39 +76,23 @@ export default function CustomerNotificationsPage() {
         });
 
         return (
-            <div className="flex items-start gap-6 py-6 px-4 hover:bg-gray-50 rounded-2xl transition-all cursor-pointer group border border-transparent hover:border-gray-100">
+            <div key={n.id} className="flex items-start gap-6 py-6 px-4 hover:bg-gray-50 rounded-2xl transition-all cursor-pointer group border border-transparent hover:border-gray-100">
                 <div className="text-brand-gold group-hover:scale-110 transition-transform mt-1 bg-brand-gold/10 p-3 rounded-xl">
                     <Icon size={24} />
                 </div>
                 <div className="flex flex-col gap-1 flex-1">
                     <div className="flex justify-between items-start gap-4">
-                        <span className="text-xl font-bold text-gray-900 leading-tight">{title}</span>
+                        <span className="text-xl font-bold text-gray-900 leading-tight">{n.title}</span>
                         <span className="text-xs font-semibold text-gray-400 whitespace-nowrap mt-1 uppercase tracking-wider">{date}</span>
                     </div>
-                    <p className="text-gray-600 leading-relaxed font-medium">{message}</p>
+                    <p className="text-gray-600 leading-relaxed font-medium">{n.message}</p>
                 </div>
             </div>
         );
     };
 
-const notifications = useNotificationStore(
-    (state) => state.notifications
-  );
-
-  console.log(notifications);
-
-  const connected = useNotificationStore((state) => state.connected);
-
-  useEffect(() => {
-    console.log("WebSocket connected:", connected);
-  }, [connected]);
-  
-
     return (
         <div className="max-w-3xl px-6 py-12">
-            <div>
-      Status: {connected ? '🟢 Connected' : '🔴 Disconnected'}
-    </div>
             <div className="flex justify-between items-center mb-12">
                 <button 
                     onClick={() => router.back()}
@@ -104,18 +101,28 @@ const notifications = useNotificationStore(
                     <div className="p-2 rounded-full group-hover:bg-brand-gold/10 transition-colors">
                         <ChevronLeft size={32} />
                     </div>
-                    Notification
+                    Notifications
                 </button>
                 
-                {!loading && !error && (
-                    <button 
-                        onClick={fetchNotifications}
-                        className="p-3 text-gray-400 hover:text-brand-gold hover:bg-brand-gold/10 rounded-full transition-all"
-                        title="Refresh notifications"
-                    >
-                        <RotateCcw size={24} />
-                    </button>
-                )}
+                <div className="flex items-center gap-4">
+                    <div className={cn(
+                        "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold",
+                        connected ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                    )}>
+                        <div className={cn("w-2 h-2 rounded-full", connected ? "bg-green-500 animate-pulse" : "bg-red-500")} />
+                        {connected ? 'Connected' : 'Disconnected'}
+                    </div>
+
+                    {!loading && !error && (
+                        <button 
+                            onClick={fetchNotifications}
+                            className="p-3 text-gray-400 hover:text-brand-gold hover:bg-brand-gold/10 rounded-full transition-all"
+                            title="Refresh notifications"
+                        >
+                            <RotateCcw size={24} />
+                        </button>
+                    )}
+                </div>
             </div>
 
             {loading ? (
@@ -145,13 +152,11 @@ const notifications = useNotificationStore(
                     {notifications.length > 0 ? (
                         <>
                             <div className="divide-y divide-gray-100 bg-white rounded-3xl overflow-hidden">
-                                {notifications.map(n => <NotificationItem key={n.id} {...n} />)}
+                                {notifications.map(n => NotificationItem(n))}
                             </div>
-                            {notifications.length >= 2 && (
-                                <p className="text-center text-gray-400 text-sm font-medium pt-8">
-                                    Displaying the most recent notifications
-                                </p>
-                            )}
+                            <p className="text-center text-gray-400 text-sm font-medium pt-8">
+                                Displaying latest updates
+                            </p>
                         </>
                     ) : (
                         <div className="text-center py-32 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
@@ -166,4 +171,8 @@ const notifications = useNotificationStore(
             )}
         </div>
     );
+}
+
+function cn(...classes: any[]) {
+  return classes.filter(Boolean).join(' ');
 }

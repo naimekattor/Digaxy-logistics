@@ -14,8 +14,10 @@ export interface ParcelCreateRequest {
     notes: string;
     special_instructions: string;
     percel_type: string;
-    latitude: string;
-    longitude: string;
+    ping: string;
+    pong: string;
+    ding: string;
+    dong: string;
     estimated_distance_km: string;
     estimated_time_minutes: string;
 }

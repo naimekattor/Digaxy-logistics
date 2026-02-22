@@ -7,7 +7,7 @@ import {
     Box, Check, CreditCard, User as UserIcon, Home, 
     Building2, GraduationCap, Monitor, Sofa, ShoppingBag, 
     Smartphone, Trash2, Heart, User, Globe, Info, Phone, 
-    MessageSquare, X, CornerDownRight, Navigation
+    MessageSquare, X, CornerDownRight, Navigation, PlusCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -16,7 +16,9 @@ import { createParcel } from '@/services/parcel.service';
 import { ParcelCreateRequest, ParcelResponse } from '@/types/parcel';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
-
+import { useJsApiLoader, StandaloneSearchBox } from '@react-google-maps/api';
+import { useRef, useEffect } from 'react';
+import { calculateDistanceKm } from '@/utils/geocode';
 // Dynamically import MapSelector to avoid SSR issues
 const MapSelector = dynamic(() => import('@/components/MapSelector'), {
   ssr: false,
@@ -34,10 +36,10 @@ const locations = [
 ];
 
 const vehicleTypes = [
-    { id: 'pickup', name: 'Pickup', price: '$42.92 + $1.62', detail: 'per labor min', imageSrc: "/images/pickup_truck.png" },
-    { id: 'van', name: 'Van', price: '$77 + $2.02', detail: 'per labor min', imageSrc: "/images/van.png" },
-    { id: 'box', name: 'Minibox', price: '$144.51 + $2.30', detail: 'per labor min', imageSrc: "/images/mini_box_truck.png" },
-    { id: 'box26feet', name: 'Bigbox', price: '$230 + $4.99', detail: 'per labor min', imageSrc: "/images/26Feet_box_truck.png" },
+    { id: 'pickup', name: 'Pickup', basePrice: 42.92, perKmRate: 1.62, detail: 'per labor min', imageSrc: "/images/pickup_truck.png", description: 'Best for small deliveries' },
+    { id: 'van', name: 'Van', basePrice: 77.00, perKmRate: 2.02, detail: 'per labor min', imageSrc: "/images/van.png", description: 'Best for medium deliveries' },
+    { id: 'box', name: 'Minibox', basePrice: 144.51, perKmRate: 2.30, detail: 'per labor min', imageSrc: "/images/mini_box_truck.png", description: 'Best for large deliveries' },
+    { id: 'box26feet', name: 'Bigbox', basePrice: 230.00, perKmRate: 4.99, detail: 'per labor min', imageSrc: "/images/26Feet_box_truck.png", description: 'Best for extra large deliveries' },
 ];
 
 const services = [
@@ -53,6 +55,7 @@ const services = [
     { id: 'donation', name: 'Donation pick up', icon: Heart },
     { id: 'labor', name: 'Labor only', icon: User },
     { id: 'craigslist', name: 'Craigslist delivery', icon: Globe },
+    { id: 'others', name: 'Others', icon: PlusCircle },
 ];
 
 export default function CustomerDashboardPage() {
@@ -89,28 +92,63 @@ export default function CustomerDashboardPage() {
   // Parcel creation state
   const [parcelData, setParcelData] = useState({
     pickup_date: new Date().toISOString().split('T')[0],
-    pickup_time: '10:00',
+    pickup_time: '',
     pickup_user_name: '',
     phone_number: '',
     pickup_address: '',
     drop_user_name: '',
     drop_number: '',
     drop_address: '',
-    price: '75.00',
-    vehicle_type: 'Pickup',
+    price: '',
+    vehicle_type: '',
     notes: '',
     special_instructions: '',
-    percel_type: 'Medium',
-    latitude: '23.78',
-    longitude: '90.41',
-    estimated_distance_km: '10',
-    estimated_time_minutes: '30'
+    percel_type: '',
+    ping: '',
+    pong: '',
+    ding:"",
+    dong:"",
+    estimated_distance_km: '',
+    estimated_time_minutes: ''
   });
 
   // Lifted states from conditional block
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
   const [useMap, setUseMap] = useState(false);
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    libraries: ['places']
+  });
+
+  const libraries: ("places")[] = ["places"];
+  const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
+
+  // Dynamic Estimation Calculation
+  useEffect(() => {
+    if (view === 'estimation' && parcelData.ping && parcelData.pong && parcelData.ding && parcelData.dong) {
+      const lat1 = parseFloat(parcelData.ping);
+      const lng1 = parseFloat(parcelData.pong);
+      const lat2 = parseFloat(parcelData.ding);
+      const lng2 = parseFloat(parcelData.dong);
+
+      if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
+        const distance = calculateDistanceKm(lat1, lng1, lat2, lng2);
+        const vehicle = vehicleTypes.find(v => v.id === selectedVehicle) || vehicleTypes[0];
+        const totalPrice = vehicle.basePrice + (distance * vehicle.perKmRate);
+        const estimatedTime = Math.round(distance * 2); // Simple estimation: 2 mins per km
+
+        setParcelData(prev => ({
+          ...prev,
+          estimated_distance_km: distance.toFixed(2),
+          estimated_time_minutes: estimatedTime.toString(),
+          price: totalPrice.toFixed(2)
+        }));
+      }
+    }
+  }, [view, selectedVehicle, parcelData.ping, parcelData.pong, parcelData.ding, parcelData.dong]);
 
   const handleMapLocationSelect = (location: { lat: number; lng: number; address?: string }) => {
     setSelectedMapLocation(location);
@@ -125,6 +163,43 @@ export default function CustomerDashboardPage() {
       setSearchLocation(`${street}, ${city}`);
     }
   };
+const handleLoad = (ref: google.maps.places.SearchBox) => {
+  searchBoxRef.current = ref;
+};
+
+const handlePlacesChanged = () => {
+  if (!searchBoxRef.current) return;
+
+  const places = searchBoxRef.current.getPlaces();
+  if (!places || places.length === 0) return;
+
+  const place = places[0];
+
+  if (!place.geometry || !place.geometry.location) return;
+
+  const lat = place.geometry.location.lat();
+  const lng = place.geometry.location.lng();
+  const formattedAddress = place.formatted_address || "";
+
+  const isPickupView = view === 'pickup-location';
+  const formattedLat = lat.toFixed(6);
+const formattedLng = lng.toFixed(6);
+
+  setParcelData(prev => ({
+    ...prev,
+    [isPickupView ? "pickup_address" : "drop_address"]: formattedAddress,
+    ...(isPickupView ? {
+      ping: formattedLat,
+      pong: formattedLng
+    } : {
+      ding: formattedLat,
+      dong: formattedLng
+    })
+  }));
+
+  console.log("Selected:", { lat, lng, formattedAddress });
+};
+
 
   const stepHeader = (title: string, backView: any) => (
     <button 
@@ -136,17 +211,31 @@ export default function CustomerDashboardPage() {
     </button>
   );
 
-  const vehicleSummaryCard = () => (
-    <Card className="flex items-center gap-6 p-6 mb-8 bg-white border border-gray-100 rounded-[2rem] shadow-sm">
-        <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center">
-            <Truck size={40} className="text-gray-800" />
-        </div>
-        <div>
-            <h3 className="text-lg font-bold text-gray-900">Pickup Truck</h3>
-            <p className="text-gray-500 font-medium">Best for small deliveries</p>
-        </div>
-    </Card>
-  );
+  const vehicleSummaryCard = () => {
+    const selectedVehicleData = vehicleTypes.find(v => v.id === selectedVehicle) || vehicleTypes[0];
+    
+    return (
+        <Card className="flex items-center gap-6 p-6 mb-8 bg-white border border-gray-100 rounded-[2rem] shadow-sm">
+            <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center overflow-hidden">
+                {selectedVehicleData.imageSrc ? (
+                    <Image 
+                        src={selectedVehicleData.imageSrc} 
+                        alt={selectedVehicleData.name} 
+                        width={64} 
+                        height={64} 
+                        className="object-contain"
+                    />
+                ) : (
+                    <Truck size={40} className="text-gray-800" />
+                )}
+            </div>
+            <div>
+                <h3 className="text-lg font-bold text-gray-900">{selectedVehicleData.name} Truck</h3>
+                <p className="text-gray-500 font-medium">{(selectedVehicleData as any).description || 'Best for your moving needs'}</p>
+            </div>
+        </Card>
+    );
+  };
 
   if (view === 'select-location') {
     return (
@@ -259,12 +348,16 @@ export default function CustomerDashboardPage() {
   if (view === 'service-selection') {
     return (
         <div className=" mx-auto">
-            <h1 className="text-5xl font-bold text-gray-900 mb-12 leading-tight">A truck and movers for any occasion</h1>
+            {stepHeader('A truck and movers for any occasion', 'home')}
             <div className="space-y-4">
                 {services.map((s) => (
                     <div 
                         key={s.id} 
-                        onClick={() => { setSelectedService(s.id); setView('pickup-location'); }}
+                        onClick={() => { 
+                            setSelectedService(s.id); 
+                            setParcelData(prev => ({ ...prev, percel_type: s.name }));
+                            setView('pickup-location'); 
+                        }}
                         className={cn(
                             "flex items-center justify-between px-8 py-3 rounded-3xl border transition-all cursor-pointer group",
                             selectedService === s.id ? "bg-zinc-900 text-white border-zinc-900" : "bg-white border-brand-gold/20 text-gray-900 hover:border-brand-gold"
@@ -278,9 +371,6 @@ export default function CustomerDashboardPage() {
                     </div>
                 ))}
             </div>
-            {/* <div className="flex justify-center mt-12 mb-20">
-                <ChevronDown size={48} className="text-gray-300 animate-bounce" />
-            </div> */}
         </div>
     );
   }
@@ -348,20 +438,30 @@ export default function CustomerDashboardPage() {
       <label className="text-lg font-bold text-gray-900">
         Street Address
       </label>
-      <Input
-        name="street"
-        placeholder='E.g. "34 Park Ave"'
-        className="bg-white border-brand-gold/30 h-16 rounded-2xl text-lg pl-8"
-        value={isPickup ? parcelData.pickup_address : parcelData.drop_address}
-        onChange={(e) => {
-          const val = e.target.value;
-          setParcelData(prev => ({
-            ...prev,
-            [isPickup ? 'pickup_address' : 'drop_address']: val
-          }));
-        }}
-        required
-      />
+      {isLoaded ? (
+        <StandaloneSearchBox
+          onLoad={handleLoad} 
+          onPlacesChanged={handlePlacesChanged}
+        >
+          <Input
+            name="street"
+            placeholder='E.g. "34 Park Ave"'
+            className="bg-white border-brand-gold/30 h-16 rounded-2xl text-lg pl-8"
+            value={isPickup ? parcelData.pickup_address : parcelData.drop_address}
+            onChange={(e) => {
+              const val = e.target.value;
+              setParcelData(prev => ({
+                ...prev,
+                [isPickup ? 'pickup_address' : 'drop_address']: val
+              }));
+            }}
+            required
+          />
+        </StandaloneSearchBox>
+      ) : (
+        <div className="h-16 bg-gray-100 animate-pulse rounded-2xl w-full" />
+      )}
+      
     </div>
   </div>
 </form>
@@ -423,14 +523,16 @@ export default function CustomerDashboardPage() {
                                         setParcelData(prev => ({
                                           ...prev,
                                           pickup_address: location.address || '',
-                                          latitude: location.lat.toString(),
-                                          longitude: location.lng.toString()
+                                          ping: location.lat.toString(),
+                                          pong: location.lng.toString()
                                         }));
                                     } else {
                                         setDropLocation(location);
                                         setParcelData(prev => ({
                                           ...prev,
-                                          drop_address: location.address || ''
+                                          drop_address: location.address || '',
+                                          ding: location.lat.toString(),
+                                          dong: location.lng.toString()
                                         }));
                                     }
                                 }}
@@ -466,22 +568,24 @@ export default function CustomerDashboardPage() {
 
               <div className="space-y-8 mb-12">
                   <h3 className="text-2xl font-bold text-brand-gold">Distance & Price</h3>
-                  <div className="space-y-6">
-                      <div>
-                          <p className="font-bold text-gray-900 mb-2">Estimated Distance:</p>
-                          <p className="text-gray-500 font-medium">Automatically calculated based on your pickup and drop locations.</p>
-                      </div>
-                      <div>
-                          <p className="font-bold text-gray-900 mb-2">Estimated Price:</p>
-                          <p className="text-gray-500 font-medium">Generated according to the selected vehicle type, distance, and base fare.</p>
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <Card className="p-8 bg-gray-50 border-none rounded-[2rem] flex flex-col items-center justify-center text-center">
+                          <p className="text-gray-500 font-bold mb-2">Estimated Distance</p>
+                          <h4 className="text-4xl font-black text-gray-900">{parcelData.estimated_distance_km} km</h4>
+                          <p className="text-sm text-gray-400 mt-2">Shortest possible route</p>
+                      </Card>
+                      <Card className="p-8 bg-brand-gold/5 border-2 border-brand-gold/20 rounded-[2rem] flex flex-col items-center justify-center text-center">
+                          <p className="text-brand-gold font-bold mb-2">Estimated Price</p>
+                          <h4 className="text-4xl font-black text-brand-gold">${parcelData.price}</h4>
+                          <p className="text-sm text-gray-400 mt-2">Based on current rates</p>
+                      </Card>
                   </div>
               </div>
 
               <div className="space-y-6 mb-12">
                   <h4 className="text-xl font-bold text-brand-gold">Notes & Info</h4>
                   <div className="space-y-4">
-                      {['Distance is calculated using the shortest available route.', 'You\'ll see the final price after confirmation.'].map((note, i) => (
+                      {[`Estimated travel time is around ${parcelData.estimated_time_minutes} minutes.`, 'Distance is calculated using the shortest available route.', 'Final price may vary based on actual traffic and labor.'].map((note, i) => (
                           <div key={i} className="flex items-start gap-4">
                               <div className="w-5 h-5 rounded bg-black mt-1.5 flex-shrink-0"></div>
                               <p className="text-gray-600 font-medium">{note}</p>
@@ -607,7 +711,7 @@ export default function CustomerDashboardPage() {
                                 <UserIcon size={20} />
                                 <span className="font-bold">Contact Info</span>
                           </div>
-                          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Edit3 size={20} className="text-gray-600" /></button>
+                          {/* <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Edit3 size={20} className="text-gray-600" /></button> */}
                       </div>
                       <div className="space-y-3 pl-8">
                           <p className="text-xl font-medium"><span className="text-gray-500">Name:</span> {parcelData.pickup_user_name}</p>
@@ -622,10 +726,10 @@ export default function CustomerDashboardPage() {
                       </div>
                       <div className="space-y-4 pl-8">
                           <p className="text-2xl font-bold">Estimated Price: <span className="text-[#B8860B] italic">${parcelData.price}</span></p>
-                          <div className="flex gap-8 text-xl font-medium text-gray-500 italic">
+                          {/* <div className="flex gap-8 text-xl font-medium text-gray-500 italic">
                              <span>Stripe</span>
                              <span>Tip</span>
-                          </div>
+                          </div> */}
                       </div>
                   </div>
 
@@ -812,7 +916,7 @@ export default function CustomerDashboardPage() {
         {v.name}
       </span>
       <span className="text-sm font-semibold text-gray-900 mt-1">
-        {v.price}
+        ${v.basePrice} + ${v.perKmRate}
       </span>
       <span className="text-xs text-gray-400 mt-1 text-center">
         {v.detail}

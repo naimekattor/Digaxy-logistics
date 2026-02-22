@@ -8,6 +8,7 @@ interface NotificationState {
 
   connect: (token: string) => void;
   disconnect: () => void;
+  setNotifications: (notifications: any[]) => void;
 }
 
 export const useNotificationStore = create<NotificationState>((set, get) => ({
@@ -16,25 +17,29 @@ export const useNotificationStore = create<NotificationState>((set, get) => ({
   connected: false,
   currentToken: "",
 
+  setNotifications: (notifications: any[]) => {
+    set({ notifications });
+  },
+
   connect: (token: string) => {
-     console.log("Connecting with token:", token);
+    console.log("Connecting with token:", token);
 
-  if (!token) {
-    console.log("❌ No token found");
-    return;
-  }
+    if (!token) {
+      console.log("❌ No token found");
+      return;
+    }
 
-  if (get().socket) return;
+    if (get().socket) return;
 
-  
+
 
     const WS_URL = process.env.NEXT_PUBLIC_WS_URL;
 
-const socket = new WebSocket(
-  `${WS_URL}/ws/notifications/?token=${token}`
-);
+    const socket = new WebSocket(
+      `${WS_URL}/ws/notifications/?token=${token}`
+    );
 
-set({ socket, currentToken: token, connected: true });
+    set({ socket, currentToken: token, connected: true });
 
     socket.onopen = () => {
       console.log('✅ WebSocket Connected');
@@ -49,18 +54,18 @@ set({ socket, currentToken: token, connected: true });
     };
 
     socket.onclose = (event) => {
-  console.log('❌ WebSocket Disconnected', event.code);
+      console.log('❌ WebSocket Disconnected', event.code);
 
-  set({ socket: null, connected: false });
+      set({ socket: null, connected: false });
 
-  const token = get().currentToken; // use session token
-  if (!token) return;
+      const token = get().currentToken; // use session token
+      if (!token) return;
 
-  setTimeout(() => {
-    console.log("🔄 Reconnecting...");
-    get().connect(token);
-  }, 3000);
-};
+      setTimeout(() => {
+        console.log("🔄 Reconnecting...");
+        get().connect(token);
+      }, 3000);
+    };
 
 
     socket.onerror = (error) => {
