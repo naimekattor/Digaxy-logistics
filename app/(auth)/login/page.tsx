@@ -1,15 +1,18 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { Button, Input } from '@/components/ui/Primitives'; 
 import { UserRole } from '@/types';
 import AuthLayout from '@/components/auth/AuthLayout';
+import { Suspense } from 'react';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl');
   const [role, setRole] = useState<UserRole>(UserRole.CUSTOMER);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,12 +55,17 @@ const roleRoutes = {
 useEffect(() => {
     if (status !== "authenticated") return;
 
+    if (callbackUrl) {
+      router.replace(callbackUrl);
+      return;
+    }
+
     const role = session?.role;
 
     if (role === "driver") router.replace("/driver");
     else if (role === "helper") router.replace("/helper");
     else router.replace("/customer");
-  }, [status, session, router]);
+  }, [status, session, router, callbackUrl]);
 
 
     return (
@@ -116,4 +124,12 @@ useEffect(() => {
 
     </AuthLayout>
   );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LoginContent />
+        </Suspense>
+    );
 }

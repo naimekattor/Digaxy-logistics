@@ -117,13 +117,12 @@ export default function CustomerDashboardPage() {
   const [city, setCity] = useState('');
   const [useMap, setUseMap] = useState(false);
 
+  const libraries: ("places" | "geometry")[] = ["places", "geometry"];
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    libraries: ['places']
+    libraries
   });
-
-  const libraries: ("places")[] = ["places"];
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
 
   // Dynamic Estimation Calculation

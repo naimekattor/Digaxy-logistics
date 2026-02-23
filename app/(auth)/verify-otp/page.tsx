@@ -12,6 +12,7 @@ function VerifyOtpContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
   const role = searchParams.get('role') as UserRole;
+  const callbackUrl = searchParams.get('callbackUrl');
   
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
@@ -52,7 +53,9 @@ function VerifyOtpContent() {
       await verifyOtp(email!, otp);
       
       // Success! Redirect to success page
-      router.push(`/signup-success?role=${role}`);
+      const redirectParams = new URLSearchParams({ role });
+      if (callbackUrl) redirectParams.append('callbackUrl', callbackUrl);
+      router.push(`/signup-success?${redirectParams.toString()}`);
     } catch (err: any) {
       setError(err.message || 'Invalid verification code');
     } finally {

@@ -11,8 +11,14 @@ function SuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const role = searchParams.get('role') as UserRole;
+  const callbackUrl = searchParams.get('callbackUrl');
 
   const handleContinue = () => {
+    if (callbackUrl) {
+      router.push(callbackUrl);
+      return;
+    }
+    
     if (role === UserRole.CUSTOMER) router.push('/customer');
     else if (role === UserRole.HELPER) router.push('/helper');
     else if (role === UserRole.DRIVER) router.push('/driver/pending'); 

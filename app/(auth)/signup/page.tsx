@@ -14,6 +14,7 @@ function SignupContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialRole = searchParams.get('role') as UserRole || UserRole.CUSTOMER;
+  const callbackUrl = searchParams.get('callbackUrl');
   
   const [role, setRole] = useState<UserRole>(initialRole);
   const [formData, setFormData] = useState({
@@ -60,8 +61,14 @@ function SignupContent() {
         throw new Error(data.message || "Signup failed");
       }
 
+      const redirectParams = new URLSearchParams({
+        email: formData.email,
+        role: role
+      });
+      if (callbackUrl) redirectParams.append('callbackUrl', callbackUrl);
+
       // Success! Redirect to verify-otp page
-      router.push(`/verify-otp?email=${formData.email}&role=${role}`);
+      router.push(`/verify-otp?${redirectParams.toString()}`);
     } catch (err: any) {
       setError(err.message || "Signup failed. Please try again.");
     } finally {
@@ -146,7 +153,6 @@ function SignupContent() {
       </p>
 
       
-
       {
         !(role==="helper") && 
         <>
@@ -159,10 +165,7 @@ function SignupContent() {
         Continue with Google
       </Button>
         </>
-        
       }
-
-      
     </AuthLayout>
   );
 }

@@ -93,7 +93,7 @@ export default function LocationsPage() {
       <section className="py-16 px-6 md:px-12 bg-white border-b">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Find <span className="text-amber-600">Digaxy</span> Near You
+            Find <span className="text-brand-gold">Digaxy</span> Near You
           </h1>
           <p className="text-lg text-gray-600 mb-10 max-w-3xl mx-auto">
             Moving, delivery and hauling services available in selected cities across the country. 
@@ -108,7 +108,7 @@ export default function LocationsPage() {
                 placeholder="Search city..."
                 className="w-full px-6 py-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm text-lg"
               />
-              <button className="absolute right-3 top-1/2 -translate-y-1/2 bg-amber-600 text-white px-6 py-2 rounded-full font-medium hover:bg-amber-700 transition">
+              <button className="absolute right-3 top-1/2 -translate-y-1/2 bg-brand-gold text-white px-6 py-2 rounded-full font-medium hover:bg-amber-700 transition">
                 Search
               </button>
             </div>

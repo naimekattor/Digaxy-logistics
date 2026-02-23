@@ -8,7 +8,7 @@ import Link from 'next/link';
 const BenefitCard = ({ icon: Icon, title, description }) => (
   <div className="bg-white p-8 rounded-2xl border border-orange-100 shadow-sm flex flex-col items-start text-left">
     <div className="p-3 bg-orange-50 rounded-lg mb-6">
-      <Icon className="w-8 h-8 text-orange-600" />
+      <Icon className="w-8 h-8 text-brand-gold" />
     </div>
     <h3 className="text-xl font-bold text-slate-900 mb-3">{title}</h3>
     <p className="text-slate-500 text-sm leading-relaxed">{description}</p>
@@ -107,7 +107,7 @@ export default function PartnerPage() {
             
           </form> */}
           <Link href={"/join"}>
-          <button className="w-full bg-[#A97200]  text-white font-bold py-4 rounded-xl transition-colors mt-4">
+          <button className="w-full bg-brand-gold  text-white font-bold py-4 rounded-xl transition-colors mt-4">
               Get Started
             </button></Link>
           
