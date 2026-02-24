@@ -29,7 +29,7 @@ export default function CustomerNotificationsPage() {
                 setLoading(true);
                 setError(null);
                 // Fetching page 2 with page_size 1 as requested by user
-                const response = await getNotifications(session.accessToken as string, 2, 1);
+                const response = await getNotifications(session.accessToken as string, 1, 10);
                 setNotifications(response.results);
             } catch (err: any) {
                 setError(err.message || 'Failed to load notifications');

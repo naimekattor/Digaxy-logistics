@@ -30,6 +30,7 @@ const initialParcelData: ParcelCreateRequest = {
     dong: '',
     estimated_distance_km: '0',
     estimated_time_minutes: '0',
+    take_helper: false,
 };
 
 export const useBookingStore = create<BookingState>()(
@@ -38,9 +39,17 @@ export const useBookingStore = create<BookingState>()(
             parcelData: initialParcelData,
             currentStep: 1,
             setParcelData: (data) =>
-                set((state) => ({
-                    parcelData: { ...state.parcelData, ...data },
-                })),
+                set((state) => {
+                    const newData = { ...state.parcelData, ...data };
+
+                    // Defensive Sanitization for Coordinates
+                    if (newData.ping === null || newData.ping === undefined) newData.ping = '';
+                    if (newData.pong === null || newData.pong === undefined) newData.pong = '';
+                    if (newData.ding === null || newData.ding === undefined) newData.ding = '';
+                    if (newData.dong === null || newData.dong === undefined) newData.dong = '';
+
+                    return { parcelData: newData };
+                }),
             setCurrentStep: (step) => set({ currentStep: step }),
             resetBooking: () => set({ parcelData: initialParcelData, currentStep: 1 }),
         }),

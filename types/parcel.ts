@@ -20,6 +20,7 @@ export interface ParcelCreateRequest {
     dong: string;
     estimated_distance_km: string;
     estimated_time_minutes: string;
+    take_helper?: boolean;
 }
 
 export interface ParcelResponse extends ParcelCreateRequest {

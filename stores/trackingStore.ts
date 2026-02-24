@@ -35,17 +35,21 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
     };
 
     socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+      try {
+        const data = JSON.parse(event.data);
 
-      // Expected backend:
-      // { lat, lng }
-
-      set({
-        location: {
-          lat: data.lat,
-          lng: data.lng,
-        },
-      });
+        // Backend format: { type: "live_location", latitude: "...", longitude: "...", ... }
+        if (data.type === "live_location" && data.latitude && data.longitude) {
+          set({
+            location: {
+              lat: parseFloat(data.latitude),
+              lng: parseFloat(data.longitude),
+            },
+          });
+        }
+      } catch (err) {
+        console.error("Error parsing tracking message:", err);
+      }
     };
 
     socket.onclose = (event) => {

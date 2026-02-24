@@ -52,7 +52,7 @@ const PartnerRetailer = () => {
               key={index}
               className="flex-shrink-0 w-[120px] h-[100px] flex justify-center items-center bg-white border border-gray-200 rounded-xl hover:border-[#A87900] transition-colors duration-300"
             >
-              <img className="max-w-[70%] max-h-[70%] object-contain opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300" src={logo.component} alt="partner logo" />
+              <img className="max-w-[70%] max-h-[70%] object-contain opacity-100  hover:grayscale-0 hover:opacity-100 transition-all duration-300" src={logo.component} alt="partner logo" />
             </div>
           ))}
         </div>

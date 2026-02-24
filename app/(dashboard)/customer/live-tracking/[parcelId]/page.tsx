@@ -8,7 +8,7 @@ import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 
 const containerStyle = {
   width: '100%',
-  height: '70vh', // map height
+  height: '70vh', 
 };
 
 export default function TrackingPage() {
@@ -35,7 +35,8 @@ export default function TrackingPage() {
 
   if (!isLoaded) return <div className="p-6 text-center">Loading map...</div>;
 
-  const driverLocation = location?.[Object.keys(location)[0]];
+  const driverLocation = location;
+  console.log("Driver Location:", driverLocation);
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
@@ -95,7 +96,7 @@ export default function TrackingPage() {
               position={{ lat: driverLocation.lat, lng: driverLocation.lng }}
               icon={{
                 url: '/images/van.png', 
-                scaledSize: new google.maps.Size(40, 40), 
+                scaledSize: new google.maps.Size(150, 150), 
                 anchor: new google.maps.Point(20, 20), 
               }}
             />

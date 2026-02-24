@@ -60,7 +60,7 @@ const SERVICES_CONFIG = {
     title: "Fast, Easy & Reliable Home Moving",
     subtitle:
       "From packing to unloading, we handle your home move with precision.",
-    cta: "See price",
+    cta: "Book a Move",
     icon: Home,
     image: "/images/hero-home.png",
   },
@@ -70,7 +70,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: Building2,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=Apartment+Moving+Illustration",
+      "/images/hero/labour.png",
   },
   college: {
     title: "Stress-Free College Moving",
@@ -78,7 +78,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: GraduationCap,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=College+Moving+Illustration",
+      "/images/hero/labour.png",
   },
   office: {
     title: "Professional Office Relocation",
@@ -87,7 +87,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: Monitor,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=Office+Moving+Illustration",
+      "/images/hero/labour.png",
   },
   furniture: {
     title: "Expert Furniture Delivery",
@@ -95,7 +95,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: Sofa,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=Furniture+Delivery+Illustration",
+      "/images/hero/labour.png",
   },
   storage: {
     title: "Efficient Storage Moving",
@@ -103,7 +103,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: Box,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=Storage+Moving+Illustration",
+      "/images/hero/labour.png",
   },
   fb: {
     title: "FB Marketplace Delivery",
@@ -111,7 +111,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: ShoppingBag,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=FB+Marketplace+Illustration",
+      "/images/hero/labour.png",
   },
   junk: {
     title: "Quick Junk Removal",
@@ -119,7 +119,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: Trash2,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=Junk+Removal+Illustration",
+      "/images/hero/labour.png",
   },
   donation: {
     title: "Easy Donation Pick Up",
@@ -127,7 +127,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: Heart,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=Donation+Pickup+Illustration",
+      "/images/hero/labour.png",
   },
   craigslist: {
     title: "Craigslist Item Delivery",
@@ -135,7 +135,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: Globe,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=Craigslist+Delivery+Illustration",
+      "/images/hero/labour.png",
   },
   appliances: {
     title: "Appliance Delivery & Moving",
@@ -143,7 +143,7 @@ const SERVICES_CONFIG = {
     cta: "See price",
     icon: Smartphone,
     image:
-      "https://via.placeholder.com/600x450/FDFBF7/8B6914?text=Appliance+Delivery+Illustration",
+      "/images/hero/labour.png",
   },
   labor: {
     title: "Expert Labor Help When You Need It",
@@ -224,7 +224,10 @@ export default function LandingPage() {
 
   const router = useRouter();
 
-  const handlePriceClick = () => {
+  const handlePriceClick = (button) => {
+    if (button==="Book a Move") {
+      router.push(`/book`);
+    }
     if (pickup && drop) {
       const searchParams = new URLSearchParams({
         pickup_lat: pickup.lat.toFixed(6),
@@ -271,7 +274,7 @@ export default function LandingPage() {
 
                   <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10">
                     <Button 
-                      onClick={handlePriceClick}
+                      onClick={()=>handlePriceClick(currentService.cta)}
                       className="w-auto h-16 px-10 bg-[#A87900] text-white font-bold rounded-2xl flex items-center gap-3 text-lg shadow-xl shadow-[#A87900]/20 hover:scale-[1.02] transition-all border-none"
                     >
                       <IoIosPricetags size={22} className="text-white" />
@@ -410,7 +413,7 @@ export default function LandingPage() {
               {/* Left Content */}
               <div className="flex-1 w-full space-y-10">
                 <div className="space-y-6">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-sans font-black text-[#111827] leading-[1.2] tracking-tight transition-all duration-300 transform">
+                  <h1 className="text-4xl md:text-5xl  font-sans font-bold text-[#111827] leading-[1.2]  transition-all duration-300 transform">
                     {currentService.title}
                   </h1>
                   <p className="text-lg md:text-xl text-gray-500 font-medium leading-relaxed transition-all duration-300 max-w-xl">

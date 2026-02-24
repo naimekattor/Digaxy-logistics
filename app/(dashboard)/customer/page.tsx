@@ -109,7 +109,8 @@ export default function CustomerDashboardPage() {
     ding:"",
     dong:"",
     estimated_distance_km: '',
-    estimated_time_minutes: ''
+    estimated_time_minutes: '',
+    take_helper:false
   });
 
   // Lifted states from conditional block
@@ -716,6 +717,35 @@ const formattedLng = lng.toFixed(6);
                           <p className="text-xl font-medium"><span className="text-gray-500">Name:</span> {parcelData.pickup_user_name}</p>
                           <p className="text-xl font-medium"><span className="text-gray-500">Phone:</span> {parcelData.phone_number}</p>
                       </div>
+                  </div>
+                  <div className="space-y-6">
+                      <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4 text-brand-gold">
+                                <UserIcon size={20} />
+                                <span className="font-bold">Extra Services</span>
+                          </div>
+                      </div>
+                      <div className="pl-8 flex items-center gap-3">
+  <input
+  type="checkbox"
+  checked={parcelData.take_helper}
+  onChange={(e) => {
+    const value = e.target.checked;
+
+    setParcelData(prev => ({
+      ...prev,
+      take_helper: value
+    }));
+
+    console.log("Helper selected:", value);
+  }}
+  className="w-5 h-5 accent-amber-600 cursor-pointer"
+/>
+
+  <p className="text-xl font-medium leading-none">
+    <span className="text-gray-500">Helper</span> 
+  </p>
+</div>
                   </div>
 
                   <div className="space-y-6 border-t border-gray-100 pt-12">

@@ -1,12 +1,9 @@
-// app/locations/page.tsx
+"use client"
 import Link from 'next/link';
 import Image from 'next/image';
 import MainLayout from '@/components/MainLayout';
 
-export const metadata = {
-  title: 'Find Digaxy Near You - Moving & Delivery Services',
-  description: 'Discover Digaxy moving, delivery, and hauling services in cities across the US.',
-};
+
 
 export default function LocationsPage() {
   // Featured/popular cities with images (Colorado-focused as per your screenshot)
@@ -86,6 +83,13 @@ export default function LocationsPage() {
     ],
   };
 
+  const handleSearch=(e: React.FormEvent<HTMLFormElement>)=>{
+      e.preventDefault();
+       
+      console.log(e.target.value);
+      
+  }
+
   return (
     <MainLayout>
          <main className="min-h-screen bg-gray-50">
@@ -104,6 +108,7 @@ export default function LocationsPage() {
           <div className="max-w-xl mx-auto mb-12">
             <div className="relative">
               <input
+              onChange={(e)=>handleSearch(e)}
                 type="text"
                 placeholder="Search city..."
                 className="w-full px-6 py-4 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm text-lg"

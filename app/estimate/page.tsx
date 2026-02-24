@@ -52,10 +52,10 @@ const ServiceType = ({
 );
 
 const VEHICLES = [
-  { id: 'pickup', name: 'Pickup', description: '6 ft bed', image: '/images/pickup_truck.png', basePrice: 50 },
+  { id: 'pickup', name: 'Pickup', description: '6 ft pickup', image: '/images/pickup_truck.png', basePrice: 50 },
   { id: 'van', name: 'Van', description: '8 ft van', image: '/images/van.png', basePrice: 75 },
-  { id: 'mini_box', name: 'XL', description: '10 ft van', image: '/images/mini_box_truck.png', basePrice: 100 },
-  { id: 'box', name: 'Box', description: '12 ft box', image: '/images/26Feet_box_truck.png', basePrice: 150 },
+  { id: 'mini_box', name: 'Mini Box', description: '10 ft van', image: '/images/mini_box_truck.png', basePrice: 100 },
+  { id: 'box', name: 'Big Box', description: '12 ft box', image: '/images/26Feet_box_truck.png', basePrice: 150 },
 ];
 
 const LIBRARIES: ("places" | "geometry")[] = ["places", "geometry"];
@@ -279,7 +279,7 @@ function EstimateContent() {
                 <div className="pt-8 border-t-2 border-slate-50 flex justify-between items-center">
                   <span className="text-xl font-black text-[#111827] uppercase tracking-tighter">Total Estimate</span>
                   <div className="text-right">
-                    <span className="block text-5xl font-black text-amber-600 leading-none tracking-tighter">
+                    <span className="block text-5xl font-black text-brand-gold leading-none tracking-tighter">
                       ${distanceKm > 0 ? totalEstimated.toFixed(0) : "0.00"}
                     </span>
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1 block">taxes included</span>
@@ -289,7 +289,7 @@ function EstimateContent() {
 
              <div className="mt-10 p-6 bg-amber-50/30 rounded-3xl flex items-start space-x-4 border border-amber-100/50">
                 <div className="p-2 bg-amber-100/50 rounded-xl">
-                  <Star size={18} fill="currentColor" className="text-amber-600 shrink-0" />
+                  <Star size={18} fill="currentColor" className="text-brand-gold shrink-0" />
                 </div>
                 <p className="text-[11px] text-amber-900 leading-relaxed font-black uppercase tracking-tight opacity-70">
                   This is a non-binding estimate based on average handling speeds. Final price is calculated based on real-time activity tracking during the move.

@@ -31,9 +31,10 @@ const LIBRARIES: ("places" | "geometry")[] = ["places", "geometry"];
 const vehicleTypes = [
   { id: 'Pickup', name: 'Pickup', basePrice: 42.92, perKmRate: 1.62 },
   { id: 'Van', name: 'Van', basePrice: 77.00, perKmRate: 2.02 },
-  { id: 'Mini Box Truck', name: 'Minibox', basePrice: 144.51, perKmRate: 2.30 },
-  { id: 'Box Truck', name: 'Bigbox', basePrice: 230.00, perKmRate: 4.99 },
+  { id: 'Minibox Truck', name: 'Minibox', basePrice: 144.51, perKmRate: 2.30 },
+  { id: 'Bigbox', name: 'Bigbox', basePrice: 230.00, perKmRate: 4.99 },
 ];
+const HELPER_FEE = 30.00;
 
 export default function BookingPage() {
   const router = useRouter();
@@ -52,30 +53,53 @@ export default function BookingPage() {
   const pickupAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const dropAutocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
+  // Debug Logger to catch null coordinates
+  useEffect(() => {
+    console.log("Current parcelData state:", {
+      ping: parcelData.ping,
+      pong: parcelData.pong,
+      ding: parcelData.ding,
+      dong: parcelData.dong,
+      typeP: typeof parcelData.ping,
+      typeO: typeof parcelData.pong
+    });
+  }, [parcelData.ping, parcelData.pong, parcelData.ding, parcelData.dong]);
+
   // Dynamic Estimation Calculation
   useEffect(() => {
-    if (parcelData.ping && parcelData.pong && parcelData.ding && parcelData.dong) {
-      const lat1 = parseFloat(parcelData.ping);
-      const lng1 = parseFloat(parcelData.pong);
-      const lat2 = parseFloat(parcelData.ding);
-      const lng2 = parseFloat(parcelData.dong);
+    const { ping, pong, ding, dong, vehicle_type, take_helper } = parcelData;
+    
+    // Defensive check: ensure they are truthy and strings (not null/undefined)
+    if (ping && pong && ding && dong) {
+      const lat1 = parseFloat(String(ping));
+      const lng1 = parseFloat(String(pong));
+      const lat2 = parseFloat(String(ding));
+      const lng2 = parseFloat(String(dong));
 
       if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
         const distance = calculateDistanceKm(lat1, lng1, lat2, lng2);
-        const vehicle = vehicleTypes.find(v => v.id === parcelData.vehicle_type) || vehicleTypes[0];
-        const totalPrice = vehicle.basePrice + (distance * vehicle.perKmRate);
-        const estimatedTime = Math.round(distance * 2);
+        const vehicle = vehicleTypes.find(v => v.id === vehicle_type) || vehicleTypes[0];
+        
+        let totalPrice = vehicle.basePrice + (distance * vehicle.perKmRate);
+        if (take_helper) {
+          totalPrice += HELPER_FEE;
+        }
 
-        if (parcelData.estimated_distance_km !== distance.toFixed(2) || parcelData.price !== totalPrice.toFixed(2)) {
+        const estimatedTime = Math.round(distance * 2);
+        const newPrice = totalPrice.toFixed(2);
+        const newDistance = distance.toFixed(2);
+
+        if (parcelData.estimated_distance_km !== newDistance || parcelData.price !== newPrice) {
+          console.log("Updating Price Layout:", { newPrice, newDistance, vehicle: vehicle.id, helper: take_helper });
           setParcelData({
-            estimated_distance_km: distance.toFixed(2),
+            estimated_distance_km: newDistance,
             estimated_time_minutes: estimatedTime.toString(),
-            price: totalPrice.toFixed(2)
+            price: newPrice
           });
         }
       }
     }
-  }, [parcelData.ping, parcelData.pong, parcelData.ding, parcelData.dong, parcelData.vehicle_type]);
+  }, [parcelData.ping, parcelData.pong, parcelData.ding, parcelData.dong, parcelData.vehicle_type, parcelData.take_helper]);
 
   const onPickupPlaceChanged = () => {
     if (pickupAutocompleteRef.current) {
@@ -149,7 +173,7 @@ export default function BookingPage() {
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="text-center mb-10">
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">Complete Your Booking</h1>
+            <h1 className="text-4xl font-bold text-slate-900  mb-2">Complete Your Booking</h1>
             <p className="text-slate-500 font-medium italic">Your professional move starts here</p>
           </div>
 
@@ -163,7 +187,7 @@ export default function BookingPage() {
                   <div>
                     <div className="flex items-center gap-3 text-brand-gold mb-4">
                       <Calendar size={24} />
-                      <h2 className="text-2xl font-black uppercase tracking-tight">Select Date</h2>
+                      <h2 className="text-2xl font-bold uppercase ">Select Date</h2>
                     </div>
                     <input 
                       type="date"
@@ -176,7 +200,7 @@ export default function BookingPage() {
                   <div>
                     <div className="flex items-center gap-3 text-brand-gold mb-4">
                       <Clock size={24} />
-                      <h2 className="text-2xl font-black uppercase tracking-tight">Time Window</h2>
+                      <h2 className="text-2xl font-bold uppercase ">Time Window</h2>
                     </div>
                     <select 
                       value={parcelData.pickup_time}
@@ -195,7 +219,7 @@ export default function BookingPage() {
                 <Button 
                   onClick={nextStep} 
                   disabled={!parcelData.pickup_date}
-                  className="w-auto px-12 h-16 rounded-2xl bg-slate-900 hover:bg-black text-white font-black uppercase tracking-widest text-xs gap-2"
+                  className="w-auto px-12 h-16 rounded-2xl bg-brand-gold  text-white font-black uppercase tracking-widest text-xs gap-2"
                 >
                   Location Details <ChevronRight size={18} />
                 </Button>
@@ -211,8 +235,8 @@ export default function BookingPage() {
                   {/* Pickup */}
                   <div className="space-y-6">
                     <div className="flex items-center gap-3 text-brand-gold">
-                      <MapPin size={24} className="text-amber-600" />
-                      <h2 className="text-2xl font-black uppercase tracking-tight">Pickup Details</h2>
+                      <MapPin size={24} className="text-brand-gold" />
+                      <h2 className="text-2xl font-bold uppercase ">Pickup Details</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <Input 
@@ -237,7 +261,11 @@ export default function BookingPage() {
                           type="text"
                           placeholder="Search Street Address"
                           value={parcelData.pickup_address}
-                          onChange={(e) => setParcelData({ pickup_address: e.target.value })}
+                          onChange={(e) => setParcelData({ 
+                            pickup_address: e.target.value,
+                            ping: '', // Clear coordinates if user types manually
+                            pong: ''
+                          })}
                           className="w-full h-16 px-6 bg-slate-50 border-2 border-transparent focus:border-brand-gold focus:bg-white rounded-2xl transition-all outline-none font-bold text-slate-700"
                         />
                       </Autocomplete>
@@ -250,7 +278,7 @@ export default function BookingPage() {
                   <div className="space-y-6">
                     <div className="flex items-center gap-3 text-slate-800">
                       <MapPin size={24} />
-                      <h2 className="text-2xl font-black uppercase tracking-tight">Drop-off Details</h2>
+                      <h2 className="text-2xl font-bold uppercase ">Drop-off Details</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <Input 
@@ -275,22 +303,53 @@ export default function BookingPage() {
                           type="text"
                           placeholder="Search Street Address"
                           value={parcelData.drop_address}
-                          onChange={(e) => setParcelData({ drop_address: e.target.value })}
+                          onChange={(e) => setParcelData({ 
+                            drop_address: e.target.value,
+                            ding: '', // Clear coordinates if user types manually
+                            dong: ''
+                          })}
                           className="w-full h-16 px-6 bg-slate-50 border-2 border-transparent focus:border-brand-gold focus:bg-white rounded-2xl transition-all outline-none font-bold text-slate-700"
                         />
                       </Autocomplete>
                     )}
                   </div>
+
+                  {Number(parcelData.price) > 0 ? (
+                    <div className="p-6 bg-brand-gold/5 rounded-2xl border border-brand-gold/10 flex justify-between items-center animate-in zoom-in-95 duration-500">
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-black text-brand-gold uppercase tracking-[0.2em]">Estimated Distance</p>
+                        <p className="text-2xl font-black text-slate-800">{parcelData.estimated_distance_km} <span className="text-sm font-bold opacity-40">km</span></p>
+                      </div>
+                      <div className="text-right space-y-1">
+                        <p className="text-[10px] font-black text-brand-gold uppercase tracking-[0.2em]">Current Estimate</p>
+                        <p className="text-2xl font-black text-brand-gold">${parcelData.price}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    (parcelData.pickup_address || parcelData.drop_address) && (
+                      <div className="p-4 bg-slate-100 rounded-xl flex items-center gap-3 text-slate-500">
+                        <AlertCircle size={18} />
+                        <p className="text-xs font-bold">
+                          {!parcelData.ping || !parcelData.pong ? "Select a pickup address from the suggestions" : 
+                           !parcelData.ding || !parcelData.dong ? "Select a drop-off address from the suggestions" : 
+                           "Calculating price..."}
+                        </p>
+                      </div>
+                    )
+                  )}
                 </div>
               </Card>
               <div className="flex justify-between">
-                <Button variant="ghost" onClick={prevStep} className="w-auto gap-2 font-bold text-slate-400">
+                <Button variant="ghost" onClick={prevStep} className="w-auto gap-2 font-bold text-slate-600 hover:text-slate-800">
                   <ChevronLeft size={18} /> Schedule
                 </Button>
                 <Button 
                   onClick={nextStep} 
-                  disabled={!parcelData.pickup_address || !parcelData.drop_address || !parcelData.pickup_user_name}
-                  className="w-auto px-12 h-16 rounded-2xl bg-slate-900 hover:bg-black text-white font-black uppercase tracking-widest text-xs gap-2"
+                  disabled={
+                    !parcelData.pickup_address || !parcelData.drop_address || !parcelData.pickup_user_name ||
+                    !parcelData.ping || !parcelData.pong || !parcelData.ding || !parcelData.dong
+                  }
+                  className="w-auto px-12 h-16 rounded-2xl bg-brand-gold text-white font-bold uppercase tracking-widest text-xs gap-2 disabled:opacity-50"
                 >
                   Parcel Information <ChevronRight size={18} />
                 </Button>
@@ -306,7 +365,7 @@ export default function BookingPage() {
                   <div>
                     <div className="flex items-center gap-3 text-brand-gold mb-4">
                       <Box size={24} />
-                      <h2 className="text-2xl font-black uppercase tracking-tight">Parcel Type</h2>
+                      <h2 className="text-2xl font-bold uppercase ">Parcel Type</h2>
                     </div>
                     <div className="grid grid-cols-3 gap-4">
                       {['Small', 'Medium', 'Large'].map((type) => (
@@ -314,7 +373,7 @@ export default function BookingPage() {
                           key={type}
                           onClick={() => setParcelData({ percel_type: type })}
                           className={cn(
-                            "h-20 rounded-2xl font-black border-2 transition-all",
+                            "h-20 rounded-2xl font-bold border-2 transition-all",
                             parcelData.percel_type === type 
                               ? "border-brand-gold bg-amber-50 text-brand-gold shadow-md" 
                               : "border-slate-100 bg-white text-slate-400 grayscale"
@@ -327,24 +386,40 @@ export default function BookingPage() {
                   </div>
 
                   <div>
-                    <div className="flex items-center gap-3 text-slate-800 mb-4">
+                    <div className="flex items-center gap-3 text-brand-gold mb-4">
                       <Truck size={24} />
-                      <h2 className="text-2xl font-black uppercase tracking-tight">Vehicle Choice</h2>
+                      <h2 className="text-2xl font-bold uppercase ">Vehicle Choice</h2>
                     </div>
                     <select 
                       value={parcelData.vehicle_type}
                       onChange={(e) => setParcelData({ vehicle_type: e.target.value })}
                       className="w-full h-16 px-6 bg-slate-50 border-2 border-transparent focus:border-brand-gold focus:bg-white rounded-2xl transition-all outline-none font-bold text-slate-700 appearance-none"
                     >
-                      <option value="Pickup">Pickup Truck</option>
-                      <option value="Van">Cargo Van</option>
-                      <option value="Mini Box Truck">Mini Box Truck</option>
-                      <option value="Box Truck">Box Truck</option>
+                      <option value="Pickup">Pickup </option>
+                      <option value="Van"> Van</option>
+                      <option value="Minibox Truck">Mini Box </option>
+                      <option value="Bigbox">Big Box </option>
                     </select>
                   </div>
 
+                  <div className="pl-8 flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={parcelData.take_helper}
+                      onChange={(e) => {
+                        const value = e.target.checked;
+                        setParcelData({ take_helper: value });
+                        console.log("Helper selected:", value);
+                      }}
+                      className="w-5 h-5 accent-amber-600 cursor-pointer"
+                    />
+                    <label className="text-sm font-bold text-slate-700 cursor-pointer">
+                      I need an extra helper (recommended for large items)
+                    </label>
+                  </div>
+
                   <div className="space-y-4">
-                    <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest ml-2">Internal Notes</h2>
+                    <h2 className="text-sm font-bold text-brand-gold uppercase tracking-widest ml-2">Aditional Notes</h2>
                     <textarea 
                       placeholder="Add any specific instructions or items to handle with care..."
                       value={parcelData.notes}
@@ -353,14 +428,28 @@ export default function BookingPage() {
                     />
                   </div>
                 </div>
+
+                {Number(parcelData.price) > 0 && (
+                  <div className="mt-6 p-6 bg-brand-gold/5 rounded-2xl border border-brand-gold/10 flex justify-between items-center animate-in zoom-in-95 duration-500">
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black text-brand-gold uppercase tracking-[0.2em]">Vehicle Selection</p>
+                      <p className="text-xl font-bold text-slate-800">{parcelData.vehicle_type}</p>
+                    </div>
+                    <div className="text-right space-y-1">
+                      <p className="text-[10px] font-black text-brand-gold uppercase tracking-[0.2em]">Current Estimate</p>
+                      <p className="text-2xl font-black text-brand-gold">${parcelData.price}</p>
+                    </div>
+                  </div>
+                )}
               </Card>
               <div className="flex justify-between">
-                <Button variant="ghost" onClick={prevStep} className="w-auto gap-2 font-bold text-slate-400">
+                <Button variant="ghost" onClick={prevStep} className="w-auto gap-2 font-bold text-slate-600">
                   <ChevronLeft size={18} /> Locations
                 </Button>
                 <Button 
                   onClick={nextStep} 
-                  className="w-auto px-12 h-16 rounded-2xl bg-slate-900 hover:bg-black text-white font-black uppercase tracking-widest text-xs gap-2"
+                  disabled={!parcelData.ping || !parcelData.pong || !parcelData.ding || !parcelData.dong}
+                  className="w-auto px-12 h-16 rounded-2xl bg-brand-gold text-white font-bold uppercase tracking-widest text-xs gap-2 disabled:opacity-50"
                 >
                   Review Booking <ChevronRight size={18} />
                 </Button>
@@ -378,8 +467,8 @@ export default function BookingPage() {
                 
                 <div className="relative z-10 space-y-10">
                   <div className="text-center group">
-                    <p className="text-xs font-black text-amber-500 uppercase tracking-[0.3em] mb-2">Final Summary</p>
-                    <h2 className="text-4xl font-black text-slate-900 tracking-tight">Everything Look Correct?</h2>
+                    <p className="text-xs font-black text-brand-gold uppercase tracking-[0.3em] mb-2">Final Summary</p>
+                    <h2 className="text-4xl font-bold text-slate-900 ">Everything Look Correct?</h2>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-8 rounded-[2rem]">
@@ -415,22 +504,28 @@ export default function BookingPage() {
                         <p className="text-xl font-black text-slate-800">{parcelData.vehicle_type}</p>
                       </div>
                     </div>
+                    {parcelData.take_helper && (
+                      <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+                        <CheckCircle2 size={14} className="text-green-600" />
+                        <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">Extra Helper Included</span>
+                      </div>
+                    )}
                     <div className="text-right">
                       <p className="text-xs font-black text-slate-400 uppercase tracking-tighter">Estimated Cost</p>
-                      <p className="text-4xl font-black text-brand-gold tracking-tight">${parcelData.price || '50.00'}</p>
+                      <p className="text-4xl font-black text-brand-gold tracking-tight">${Number(parcelData.price) > 0 ? parcelData.price : '0.00'}</p>
                     </div>
                   </div>
                 </div>
               </Card>
 
               <div className="flex flex-col sm:flex-row gap-4 items-center">
-                <Button variant="ghost" onClick={prevStep} className="w-auto px-8 font-bold text-slate-400 hover:text-slate-600">
+                <Button variant="ghost" onClick={prevStep} className="w-auto px-8 font-bold text-slate-600 hover:text-slate-800">
                   <ChevronLeft size={18} /> Adjust Details
                 </Button>
                 <Button 
                   onClick={handleFinalSubmit} 
                   isLoading={loading}
-                  className="flex-1 h-20 rounded-[1.5rem] bg-[#A87900] hover:bg-black text-white font-black text-xl uppercase tracking-widest shadow-2xl shadow-amber-200 transition-all transform active:scale-95"
+                  className="flex-1 h-20 rounded-[1.5rem] bg-[#A87900]  text-white font-bold text-xl uppercase tracking-widest shadow-2xl shadow-amber-200 transition-all transform active:scale-95"
                 >
                   Confirm & Book Now
                 </Button>
@@ -456,21 +551,21 @@ export default function BookingPage() {
               <div className="w-20 h-20 bg-amber-50 rounded-[2rem] flex items-center justify-center text-brand-gold mx-auto mb-6">
                 <UserIcon size={40} />
               </div>
-              <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">Almost There!</h2>
+              <h2 className="text-3xl font-bold text-slate-900  mb-2">Almost There!</h2>
               <p className="text-slate-500 font-medium">Please sign in to confirm your booking and track your driver.</p>
             </div>
 
             <div className="space-y-4">
               <Button 
                 onClick={() => router.push('/login?callbackUrl=/book')}
-                className="h-16 rounded-2xl bg-black text-white font-black uppercase tracking-widest text-xs"
+                className="h-16 rounded-2xl bg-brand-gold text-white font-black uppercase tracking-widest text-xs"
               >
                 Sign In to Account
               </Button>
               <Button 
                 variant="outline"
                 onClick={() => router.push('/signup?role=customer&callbackUrl=/book')}
-                className="h-16 rounded-2xl bg-white border-2 border-slate-100 text-slate-900 font-black uppercase tracking-widest text-xs hover:border-brand-gold transition-all"
+                className="h-16 rounded-2xl bg-white border-2 border-slate-100 text-brand-gold font-black uppercase tracking-widest text-xs hover:border-brand-gold transition-all"
               >
                 Create New Profile
               </Button>

@@ -73,7 +73,7 @@ const EstimateSection = () => {
       <div className="max-w-3xl mx-auto relative z-10">
         <div className="text-center mb-16">
           
-          <h2 className="text-4xl md:text-5xl  font-black text-slate-900 mb-6  leading-none">
+          <h2 className="text-4xl md:text-5xl  font-bold text-slate-900 mb-6  leading-none">
             Get an instant estimate
           </h2>
           <p className="text-xl text-slate-500 max-w-2xl mx-auto font-medium">
