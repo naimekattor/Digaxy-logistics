@@ -51,7 +51,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-l from-[#A97200]/0 via-[#C29A47]/0 to-[#C29A47]/15 backdrop-blur-md  transition-all duration-300">
         <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
           <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
             <Logo />

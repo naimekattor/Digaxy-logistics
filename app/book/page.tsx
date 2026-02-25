@@ -36,6 +36,7 @@ const vehicleTypes = [
 ];
 const HELPER_FEE = 30.00;
 
+
 export default function BookingPage() {
   const router = useRouter();
   const { data: session, status: authStatus } = useSession();
@@ -135,6 +136,8 @@ export default function BookingPage() {
 
     setLoading(true);
     try {
+      console.log("parcelData",parcelData);
+      
       await createParcel(parcelData, session?.accessToken);
       toast.success('Booking created successfully!');
       resetBooking();

@@ -92,7 +92,7 @@ export default function CustomerDashboardPage() {
   // Parcel creation state
   const [parcelData, setParcelData] = useState({
     pickup_date: new Date().toISOString().split('T')[0],
-    pickup_time: '',
+    pickup_time: '10:00',
     pickup_user_name: '',
     phone_number: '',
     pickup_address: '',
@@ -103,7 +103,7 @@ export default function CustomerDashboardPage() {
     vehicle_type: '',
     notes: '',
     special_instructions: '',
-    percel_type: '',
+    percel_type: 'Small',
     ping: '',
     pong: '',
     ding:"",
@@ -126,6 +126,58 @@ export default function CustomerDashboardPage() {
   });
   const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
 
+  //  Validation 
+
+  const validateCurrentStep = () => {
+  switch (view) {
+    case 'select-location':
+      if (!pickupLocation) {
+        alert("Please select pickup location");
+        return false;
+      }
+      if (!dropLocation) {
+        alert("Please select drop location");
+        return false;
+      }
+      return true;
+
+    case 'service-selection':
+      if (!selectedVehicle) {
+        alert("Please select a vehicle type");
+        return false;
+      }
+      return true;
+
+    case 'pickup-location':
+      if (!parcelData.pickup_address || !parcelData.ping || !parcelData.pong || !parcelData.pickup_user_name || !parcelData.phone_number) {
+        alert("Please complete pickup details and select a valid address from suggestions");
+        return false;
+      }
+      return true;
+
+    case 'drop-location':
+      if (!parcelData.drop_address || !parcelData.ding || !parcelData.dong || !parcelData.drop_user_name || !parcelData.drop_number) {
+        alert("Please complete drop details and select a valid address from suggestions");
+        return false;
+      }
+      return true;
+
+    case 'estimation':
+      if (!parcelData.price || parcelData.price === '0.00') {
+        alert("Cost estimation is missing. Please ensure addresses are valid.");
+        return false;
+      }
+      return true;
+
+    default:
+      return true;
+  }
+};
+const goToNextStep = (nextStep: typeof view) => {
+  if (validateCurrentStep()) {
+    setView(nextStep);
+  }
+};
   // Dynamic Estimation Calculation
   useEffect(() => {
     if (view === 'estimation' && parcelData.ping && parcelData.pong && parcelData.ding && parcelData.dong) {
@@ -136,12 +188,14 @@ export default function CustomerDashboardPage() {
 
       if (!isNaN(lat1) && !isNaN(lng1) && !isNaN(lat2) && !isNaN(lng2)) {
         const distance = calculateDistanceKm(lat1, lng1, lat2, lng2);
-        const vehicle = vehicleTypes.find(v => v.id === selectedVehicle) || vehicleTypes[0];
+        const selectedVehicleId = selectedVehicle || 'pickup';
+        const vehicle = vehicleTypes.find(v => v.id === selectedVehicleId) || vehicleTypes[0];
         const totalPrice = vehicle.basePrice + (distance * vehicle.perKmRate);
-        const estimatedTime = Math.round(distance * 2); // Simple estimation: 2 mins per km
+        const estimatedTime = Math.round(distance * 2);
 
         setParcelData(prev => ({
           ...prev,
+          vehicle_type: vehicle.name, // Ensure vehicle_type is synced
           estimated_distance_km: distance.toFixed(2),
           estimated_time_minutes: estimatedTime.toString(),
           price: totalPrice.toFixed(2)
@@ -355,7 +409,7 @@ const formattedLng = lng.toFixed(6);
                         key={s.id} 
                         onClick={() => { 
                             setSelectedService(s.id); 
-                            setParcelData(prev => ({ ...prev, percel_type: s.name }));
+                            // setParcelData(prev => ({ ...prev, percel_type: s.name }));
                             setView('pickup-location'); 
                         }}
                         className={cn(
@@ -452,7 +506,8 @@ const formattedLng = lng.toFixed(6);
               const val = e.target.value;
               setParcelData(prev => ({
                 ...prev,
-                [isPickup ? 'pickup_address' : 'drop_address']: val
+                [isPickup ? 'pickup_address' : 'drop_address']: val,
+                ...(isPickup ? { ping: '', pong: '' } : { ding: '', dong: '' }) // Clear coords on manual type
               }));
             }}
             required
@@ -491,15 +546,14 @@ const formattedLng = lng.toFixed(6);
 
                     <Button 
                         onClick={() => {
-                            if (isPickup) {
-                                setPickupLocation({ lat: 0, lng: 0, street, city });
-                            } else {
-                                setDropLocation({ lat: 0, lng: 0, street, city });
-                            }
-                            setView(isPickup ? 'drop-location' : 'estimation');
+                            goToNextStep(isPickup ? 'drop-location' : 'estimation');
                         }}
-                        
-                        className="w-96 h-14 text-xl font-semibold rounded-[16px] bg-[#B8860B] hover:bg-[#D4A017] shadow-xl shadow-brand-gold/20"
+                        disabled={
+                          isPickup 
+                          ? (!parcelData.pickup_address || !parcelData.ping || !parcelData.pong || !parcelData.pickup_user_name || !parcelData.phone_number)
+                          : (!parcelData.drop_address || !parcelData.ding || !parcelData.dong || !parcelData.drop_user_name || !parcelData.drop_number)
+                        }
+                        className="w-96 h-14 text-xl font-semibold rounded-[16px] bg-[#B8860B] hover:bg-[#D4A017] shadow-xl shadow-brand-gold/20 disabled:opacity-50"
                     >
                         {isPickup ? 'Confirm Pickup Location' : 'Confirm Drop Location'}
                     </Button>
@@ -595,7 +649,7 @@ const formattedLng = lng.toFixed(6);
               </div>
 
               <Button 
-                onClick={() => setView('booking-details')}
+                onClick={() => goToNextStep('booking-details')}
                 className="w-96 h-14 text-xl font-semibold rounded-[16px] bg-[#B8860B] hover:bg-[#D4A017] shadow-xl"
               >
                   Continue to Details
@@ -674,6 +728,7 @@ const formattedLng = lng.toFixed(6);
                             <div>
                                 <label className="text-lg font-bold text-gray-900 mb-2 block">Parcel Type</label>
                                 <select 
+                                required
                                     className="w-full h-16 px-6 bg-white border border-brand-gold/30 rounded-2xl text-lg font-medium outline-none focus:ring-2 focus:ring-brand-gold transition-all"
                                     value={parcelData.percel_type}
                                     onChange={(e) => setParcelData(prev => ({ ...prev, percel_type: e.target.value }))}
@@ -920,7 +975,9 @@ const formattedLng = lng.toFixed(6);
   {vehicleTypes.map((v) => (
     <div
       key={v.id}
-      onClick={() => setSelectedVehicle(v.id)}
+      onClick={() => {
+        setSelectedVehicle(v.id);
+      }}
       className={cn(
         " border-2 rounded-[1rem] w-[200px] px-6 py-8 flex flex-col items-center cursor-pointer transition-all",
         selectedVehicle === v.id
@@ -957,7 +1014,7 @@ const formattedLng = lng.toFixed(6);
 
                 <div className="flex justify-center md:justify-start">
                     <Button 
-                        onClick={() => setView('service-selection')}
+                        onClick={() => goToNextStep('service-selection')}
                         className="w-60 h-14 text-xl font-bold rounded-xl bg-[#B8860B] hover:bg-[#D4A017] shadow-xl shadow-brand-gold/20"
                     >
                         Continue
