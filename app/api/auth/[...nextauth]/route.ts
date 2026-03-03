@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
@@ -52,7 +53,7 @@ const handler = NextAuth({
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -63,7 +64,7 @@ const handler = NextAuth({
       return token;
     },
 
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       session.accessToken = token.accessToken;
       session.role = token.role;
       session.driverStatus = token.driverStatus;
@@ -76,6 +77,8 @@ const handler = NextAuth({
     signIn: "/login",
     error: "/login",
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

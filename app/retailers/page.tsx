@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import MainLayout from '@/components/MainLayout';
 import Image from 'next/image';
+import PartnerRetailer from '@/components/PartnerRetailer';
 
 const retailers = [
   {
@@ -173,32 +174,26 @@ const ServiceCard = ({ title, description, iconColor,serImage }) => (
   </div>
 );
 
-// Reusable Component for Retailer Directory
-// const RetailerCard = ({ logo, name, description, items }) => (
-//   <div className="flex flex-col items-center text-center p-6 border border-transparent hover:border-slate-100 rounded-xl transition-all">
-//     <div className="h-12 mb-4 flex items-center justify-center">
-//       <span className="font-black text-2xl tracking-tighter italic">{logo}</span>
-//     </div>
-//     <h3 className="font-bold text-slate-800 text-xl mb-2">{name} Delivery</h3>
-//     <p className="text-xs text-slate-500 mb-4 max-w-[200px]">{description}</p>
-//     <ul className="text-left space-y-2">
-//       {items.map((item, idx) => (
-//         <li key={idx} className="flex items-center text-xs text-slate-600">
-//           <span className="w-2 h-2 rounded-full bg-orange-400 mr-2" />
-//           {item}
-//         </li>
-//       ))}
-//     </ul>
-//   </div>
-// );
 
 export default function DeliveryLandingPage() {
+  const [query, setQuery] = useState("");
+
+const filtered = retailers.filter(r =>
+  r.title.toLowerCase().includes(query.toLowerCase()) ||
+  r.desc.toLowerCase().includes(query.toLowerCase()) ||
+  r.items.some(item => item.toLowerCase().includes(query.toLowerCase()))
+);
+
+const scrollTo = (key) => {
+  document.getElementById(`retailer-${key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  setQuery("");
+};
   return (
     <MainLayout>
     <div className="min-h-screen bg-white font-sans text-slate-900">
       {/* Hero Section */}
       <section className="pt-20 pb-16 px-4 text-center max-w-4xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-slate-900">
+        <h1 className="text-4xl md:text-5xl font-bold  mb-6 text-slate-900">
           Deliver Big & Bulky Items <br /> From Your Favorite Retailers
         </h1>
         <p className="text-slate-500 mb-10 max-w-lg mx-auto">
@@ -207,25 +202,41 @@ export default function DeliveryLandingPage() {
         </p>
         
         <div className="relative max-w-md mx-auto">
-          <Search className="absolute left-4 top-3 text-slate-400 w-5 h-5" />
-          <input 
-            type="text" 
-            placeholder="Search retailer name..." 
-            className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-          />
-        </div>
+  <Search className="absolute left-4 top-3 text-slate-400 w-5 h-5" />
+  <input 
+    type="text"
+    value={query}
+    onChange={e => setQuery(e.target.value)} 
+    placeholder="Search retailer name..." 
+    className="w-full pl-12 pr-4 py-3 border border-slate-200 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+  />
+
+  {/* ✅ MOVED INSIDE HERE */}
+  {query && (
+    <div className="absolute top-full mt-2 w-full bg-white border border-slate-200 rounded-2xl shadow-lg z-50 overflow-hidden">
+      {filtered.length === 0 ? (
+        <p className="p-4 text-slate-400 text-sm">No retailers found</p>
+      ) : (
+        filtered.map(r => (
+          <div key={r.key} onClick={() => scrollTo(r.key)} className="flex items-center gap-3 p-3 hover:bg-slate-50 cursor-pointer">
+            <img src={r.logoUrl} className="w-12 h-10 object-contain" />
+            <div>
+              <p className="font-semibold text-sm text-slate-800">{r.title}</p>
+              <p className="text-xs text-slate-400">{r.desc}</p>
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  )}
+</div>
       </section>
+      
 
       {/* Top Retail Partners */}
       <section className="py-12 px-4">
-        <h2 className="text-2xl font-bold text-center mb-8">Top Retail Partners</h2>
-        <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto opacity-80">
-          {['Walmart', 'COSTCO', 'IKEA', 'HOME DEPOT', 'BEST BUY'].map((brand) => (
-            <div key={brand} className="px-8 py-4 border border-slate-200 rounded-lg font-bold text-slate-400 grayscale hover:grayscale-0 cursor-pointer transition-all">
-              {brand}
-            </div>
-          ))}
-        </div>
+        {/* <h2 className="text-2xl font-bold text-center mb-8">Top Retail Partners</h2> */}
+        <PartnerRetailer />
       </section>
 
       <hr className="border-slate-100 max-w-6xl mx-auto my-12" />
@@ -293,8 +304,10 @@ export default function DeliveryLandingPage() {
             }}
           >
             {retailers.map((r, i) => (
-              <RetailerCard key={r.key} {...r} delay={i * 100} />
-            ))}
+  <div id={`retailer-${r.key}`} key={r.key}>
+    <RetailerCard {...r} delay={i * 100} />
+  </div>
+))}
           </div>
         </div>
       </section>

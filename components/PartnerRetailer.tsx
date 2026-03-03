@@ -62,7 +62,7 @@ const PartnerRetailer = () => {
   return (
     <section className="py-20 px-4 bg-gray-50/50">
             <div className="max-w-7xl mx-auto text-center">
-                <h4 className="font-bold text-gray-400 mb-10 tracking-[0.2em] uppercase text-sm">Partner Retailers</h4>
+                <h4 className="font-bold text-gray-400 mb-10 tracking-[0.2em] uppercase text-sm">Top Retail Partners</h4>
                 <div className="w-full max-w-6xl flex flex-col gap-y-6">
             <Marquee logos={logos1} />
         </div>

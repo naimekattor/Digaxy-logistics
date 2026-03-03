@@ -4,6 +4,8 @@ import { Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/authContext";
 import Providers from "./providers";
+import ChatWidget from '../components/ChatWidget';
+
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -28,6 +30,7 @@ export default function RootLayout({
       >
         <Providers>
           <AuthProvider>{children}</AuthProvider>
+          <ChatWidget/>
         </Providers>
       </body>
     </html>
