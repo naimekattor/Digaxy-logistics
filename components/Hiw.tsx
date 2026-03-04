@@ -6,7 +6,7 @@ const Hiw = () => {
   return (
     <section className="py-24 px-4 bg-[#ffffff]">
               <div className="max-w-7xl mx-auto">
-                <h2 className="text-4xl md:text-5xl md:font-bold font-medium text-center mb-16 text-gray-900 ">How It Works</h2>
+                <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-gray-900 ">How It Works</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {[

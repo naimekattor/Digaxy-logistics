@@ -10,7 +10,7 @@ export async function POST(req) {
 
     const { message } = await req.json();
 
-    const response = await fetch('http://10.10.13.75:8400/api/ai-support/', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/ai-support/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

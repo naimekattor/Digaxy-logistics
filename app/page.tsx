@@ -264,7 +264,7 @@ export default function LandingPage() {
               <div className="max-content mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20 mb-20">
                 {/* Left Content */}
                 <div className="flex-1 text-center lg:text-left min-h-[350px] flex flex-col justify-center">
-                  <h1 className="text-5xl md:text-[60px] font-sans font-black text-[#111827] mb-6 leading-[1.1] tracking-tight transition-all duration-300 transform">
+                  <h1 className="text-4xl md:text-5xl font-sans font-bold text-gray-900 mb-6 leading-[1.1]  transition-all duration-300 transform">
                     Fast, Easy & Reliable <br />
                     Moving <span className="text-[#A87900]">With Digaxy</span>
                   </h1>

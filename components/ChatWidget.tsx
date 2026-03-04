@@ -87,9 +87,9 @@ export default function ChatWidget() {
         }}>
 
           {/* Header */}
-          <div style={{
+          <div  style={{
             padding: '12px 16px',
-            background: 'linear-gradient(135deg, #0070f3, #0050c8)',
+            background: 'linear-gradient(135deg, #A97200, #C29A47)',
             color: '#fff',
             display: 'flex',
             justifyContent: 'space-between',
@@ -161,7 +161,7 @@ export default function ChatWidget() {
                     <div style={{
                       maxWidth: '80%', padding: '9px 13px',
                       borderRadius: m.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                      background: m.role === 'user' ? 'linear-gradient(135deg, #0070f3, #0050c8)' : '#fff',
+                      background: m.role === 'user' ? 'linear-gradient(135deg, #A97200, #C29A47)' : '#fff',
                       color: m.role === 'user' ? '#fff' : '#111',
                       fontSize: 13, lineHeight: 1.6,
                       whiteSpace: 'pre-wrap',
@@ -219,7 +219,7 @@ export default function ChatWidget() {
                   disabled={loading}
                   style={{
                     padding: '9px 18px',
-                    background: loading ? '#93c5fd' : 'linear-gradient(135deg, #0070f3, #0050c8)',
+                    background: loading ? '#93c5fd' : 'linear-gradient(135deg, #A97200, #C29A47)',
                     color: '#fff', border: 'none', borderRadius: 24,
                     cursor: loading ? 'not-allowed' : 'pointer',
                     fontSize: 13, fontWeight: 600,
@@ -246,7 +246,7 @@ export default function ChatWidget() {
         onClick={() => { setOpen(!open); setMinimized(false); }}
         style={{
           width: 56, height: 56, borderRadius: '50%',
-          background: 'linear-gradient(135deg, #0070f3, #0050c8)',
+          background: 'linear-gradient(135deg, #A97200, #C29A47)',
           color: '#fff', border: 'none', fontSize: 26,
           cursor: 'pointer', display: 'block', marginLeft: 'auto',
           boxShadow: '0 4px 16px rgba(0,112,243,0.45)',
