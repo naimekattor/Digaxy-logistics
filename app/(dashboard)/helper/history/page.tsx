@@ -40,7 +40,7 @@ export default function HelperHistoryPage() {
 
                         <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center gap-4 border-t md:border-t-0 md:border-l border-gray-100 pt-6 md:pt-0 md:pl-12">
                             <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">Earning</p>
-                            <p className="text-4xl font-black text-brand-gold italic">{job.earning}</p>
+                            <p className="text-4xl font-bold text-brand-gold italic">{job.earning}</p>
                         </div>
                     </div>
                 </Card>

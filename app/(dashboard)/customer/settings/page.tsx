@@ -83,7 +83,7 @@ export default function CustomerSettingsPage() {
                <div className="p-2 bg-brand-gold text-white rounded-xl group-hover:scale-110 transition-transform">
                   <PhoneCall size={18} />
                </div>
-               <span className="text-sm font-black text-brand-gold tracking-wide">Admin Support</span>
+               <span className="text-sm font-bold text-brand-gold tracking-wide">Admin Support</span>
             </div>
             <ChevronRight size={20} className="text-brand-gold transition-transform group-hover:translate-x-1" />
           </div>

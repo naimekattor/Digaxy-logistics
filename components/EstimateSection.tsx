@@ -89,7 +89,7 @@ const EstimateSection = () => {
             <div className="grid grid-cols-1  gap-8 relative">
 
               <div className="space-y-3">
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2">Pickup location</label>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] ml-2">Pickup location</label>
                 <div className="flex items-center gap-4 bg-[#FDFBF7] border border-[#E8DFC5] rounded-2xl px-6 h-[72px] focus-within:ring-2 focus-within:ring-[#A87900] transition-all group shadow-sm">
   <MapPin size={22} className="text-amber-600 shrink-0" />
   
@@ -102,7 +102,7 @@ const EstimateSection = () => {
         <input
           type="text"
           placeholder="Where should we pick up?"
-          className="w-full bg-transparent border-none outline-none font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-black placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+          className="w-full bg-transparent border-none outline-none font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
         />
       </Autocomplete>
     </div>
@@ -113,7 +113,7 @@ const EstimateSection = () => {
               </div>
 
               <div className="space-y-3">
-  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-2">
+  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] ml-2">
     Drop-off location
   </label>
 
@@ -129,7 +129,7 @@ const EstimateSection = () => {
           <input
             type="text"
             placeholder="Where should we deliver?"
-            className="w-full bg-transparent border-none outline-none font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-black placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+            className="w-full bg-transparent border-none outline-none font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
           />
         </Autocomplete>
       </div>
@@ -146,7 +146,7 @@ const EstimateSection = () => {
                 <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 transition-all group-hover:scale-110 group-hover:bg-amber-100">
                   <MapPin size={20} className="text-amber-600" />
                 </div>
-                <span className="mt-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pickup</span>
+                <span className="mt-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pickup</span>
               </div>
               
               <div className="flex-1 h-[2px] bg-slate-100 relative overflow-hidden">
@@ -157,7 +157,7 @@ const EstimateSection = () => {
                 <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-slate-800 transition-all group-hover:scale-110 group-hover:bg-amber-100">
                   <MapPin size={20} className="text-amber-600" />
                 </div>
-                <span className="mt-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">Drop-off</span>
+                <span className="mt-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Drop-off</span>
               </div>
 
               <div className="flex-1 h-[2px] bg-slate-100 relative overflow-hidden">
@@ -168,7 +168,7 @@ const EstimateSection = () => {
   <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400">
     <Truck size={20} className="text-amber-600" /> 
   </div>
-  <span className="mt-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+  <span className="mt-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
     Estimate
   </span>
 </div>
@@ -179,7 +179,7 @@ const EstimateSection = () => {
               <button 
                 onClick={handleEstimateClick}
                 disabled={!pickup || !drop}
-                className="group relative inline-flex items-center gap-4 px-12 py-6 bg-[#A97200] hover:bg-[#8B5E00] text-white text-xl font-black rounded-3xl shadow-2xl shadow-amber-200 transition-all transform active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed overflow-hidden"
+                className="group relative inline-flex items-center gap-4 px-12 py-6 bg-[#A97200] hover:bg-[#8B5E00] text-white text-xl font-bold rounded-3xl shadow-2xl shadow-amber-200 transition-all transform active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed overflow-hidden"
               >
                 <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
                 <span className="relative z-10 uppercase tracking-[0.2em] text-sm">Get Instant Estimate</span>

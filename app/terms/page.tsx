@@ -3,7 +3,7 @@ import React from 'react';
 
 const TermsSection = ({ title, children }) => (
   <div className="mb-10">
-    <h2 className="text-xl font-black text-[#0f2a3f] mb-4">{title}</h2>
+    <h2 className="text-xl font-bold text-[#0f2a3f] mb-4">{title}</h2>
     <div className="text-slate-600 text-sm leading-relaxed space-y-4">
       {children}
     </div>
@@ -24,7 +24,7 @@ export default function TermsAndConditions() {
     <div className="min-h-screen bg-white font-sans text-slate-900 pb-20">
       {/* Header Section */}
       <header className="pt-20 pb-12 px-4 text-center max-w-4xl mx-auto">
-        <h1 className="text-4xl font-black text-[#0f2a3f] mb-8">Terms & Condition</h1>
+        <h1 className="text-4xl font-bold text-[#0f2a3f] mb-8">Terms & Condition</h1>
         <p className="text-slate-600 text-sm leading-relaxed">
           These Terms & Conditions ("Terms") govern your use of Digaxy ("we", "our", or "us") 
           and all services offered through our website, mobile application, and platform ("Site"). 
@@ -79,7 +79,7 @@ export default function TermsAndConditions() {
 
         {/* Contact Section */}
         <section className="mt-16 pt-8 border-t border-slate-100">
-          <h2 className="text-xl font-black text-[#0f2a3f] mb-4">Contacting Us</h2>
+          <h2 className="text-xl font-bold text-[#0f2a3f] mb-4">Contacting Us</h2>
           <div className="text-sm font-medium space-y-2">
             <p className="text-slate-600">
               Email: <span className="text-[#a67c00]">support@digaxy.com</span>

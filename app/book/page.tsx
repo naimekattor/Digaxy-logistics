@@ -222,7 +222,7 @@ export default function BookingPage() {
                 <Button 
                   onClick={nextStep} 
                   disabled={!parcelData.pickup_date}
-                  className="w-auto px-12 h-16 rounded-2xl bg-brand-gold  text-white font-black uppercase tracking-widest text-xs gap-2"
+                  className="w-auto px-12 h-16 rounded-2xl bg-brand-gold  text-white font-bold uppercase tracking-widest text-xs gap-2"
                 >
                   Location Details <ChevronRight size={18} />
                 </Button>
@@ -320,12 +320,12 @@ export default function BookingPage() {
                   {Number(parcelData.price) > 0 ? (
                     <div className="p-6 bg-brand-gold/5 rounded-2xl border border-brand-gold/10 flex justify-between items-center animate-in zoom-in-95 duration-500">
                       <div className="space-y-1">
-                        <p className="text-[10px] font-black text-brand-gold uppercase tracking-[0.2em]">Estimated Distance</p>
-                        <p className="text-2xl font-black text-slate-800">{parcelData.estimated_distance_km} <span className="text-sm font-bold opacity-40">km</span></p>
+                        <p className="text-[10px] font-bold text-brand-gold uppercase tracking-[0.2em]">Estimated Distance</p>
+                        <p className="text-2xl font-bold text-slate-800">{parcelData.estimated_distance_km} <span className="text-sm font-bold opacity-40">km</span></p>
                       </div>
                       <div className="text-right space-y-1">
-                        <p className="text-[10px] font-black text-brand-gold uppercase tracking-[0.2em]">Current Estimate</p>
-                        <p className="text-2xl font-black text-brand-gold">${parcelData.price}</p>
+                        <p className="text-[10px] font-bold text-brand-gold uppercase tracking-[0.2em]">Current Estimate</p>
+                        <p className="text-2xl font-bold text-brand-gold">${parcelData.price}</p>
                       </div>
                     </div>
                   ) : (
@@ -435,12 +435,12 @@ export default function BookingPage() {
                 {Number(parcelData.price) > 0 && (
                   <div className="mt-6 p-6 bg-brand-gold/5 rounded-2xl border border-brand-gold/10 flex justify-between items-center animate-in zoom-in-95 duration-500">
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black text-brand-gold uppercase tracking-[0.2em]">Vehicle Selection</p>
+                      <p className="text-[10px] font-bold text-brand-gold uppercase tracking-[0.2em]">Vehicle Selection</p>
                       <p className="text-xl font-bold text-slate-800">{parcelData.vehicle_type}</p>
                     </div>
                     <div className="text-right space-y-1">
-                      <p className="text-[10px] font-black text-brand-gold uppercase tracking-[0.2em]">Current Estimate</p>
-                      <p className="text-2xl font-black text-brand-gold">${parcelData.price}</p>
+                      <p className="text-[10px] font-bold text-brand-gold uppercase tracking-[0.2em]">Current Estimate</p>
+                      <p className="text-2xl font-bold text-brand-gold">${parcelData.price}</p>
                     </div>
                   </div>
                 )}
@@ -470,28 +470,28 @@ export default function BookingPage() {
                 
                 <div className="relative z-10 space-y-10">
                   <div className="text-center group">
-                    <p className="text-xs font-black text-brand-gold uppercase tracking-[0.3em] mb-2">Final Summary</p>
+                    <p className="text-xs font-bold text-brand-gold uppercase tracking-[0.3em] mb-2">Final Summary</p>
                     <h2 className="text-4xl font-bold text-slate-900 ">Everything Look Correct?</h2>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50 p-8 rounded-[2rem]">
                     <div className="space-y-4">
                       <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pickup Address</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pickup Address</p>
                         <p className="font-bold text-slate-800 line-clamp-2">{parcelData.pickup_address}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Contact</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Contact</p>
                         <p className="font-bold text-slate-800">{parcelData.pickup_user_name} • {parcelData.phone_number}</p>
                       </div>
                     </div>
                     <div className="space-y-4">
                       <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Drop-off Address</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Drop-off Address</p>
                         <p className="font-bold text-slate-800 line-clamp-2">{parcelData.drop_address}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Scheduled For</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Scheduled For</p>
                         <p className="font-bold text-slate-800">{parcelData.pickup_date} at {parcelData.pickup_time}</p>
                       </div>
                     </div>
@@ -503,19 +503,19 @@ export default function BookingPage() {
                         <Truck size={28} />
                       </div>
                       <div>
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-tighter">Selected Fleet</p>
-                        <p className="text-xl font-black text-slate-800">{parcelData.vehicle_type}</p>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">Selected Fleet</p>
+                        <p className="text-xl font-bold text-slate-800">{parcelData.vehicle_type}</p>
                       </div>
                     </div>
                     {parcelData.take_helper && (
                       <div className="flex items-center gap-2 bg-green-50 px-3 py-1 rounded-full border border-green-100">
                         <CheckCircle2 size={14} className="text-green-600" />
-                        <span className="text-[10px] font-black text-green-700 uppercase tracking-widest">Extra Helper Included</span>
+                        <span className="text-[10px] font-bold text-green-700 uppercase tracking-widest">Extra Helper Included</span>
                       </div>
                     )}
                     <div className="text-right">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-tighter">Estimated Cost</p>
-                      <p className="text-4xl font-black text-brand-gold tracking-tight">${Number(parcelData.price) > 0 ? parcelData.price : '0.00'}</p>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">Estimated Cost</p>
+                      <p className="text-4xl font-bold text-brand-gold tracking-tight">${Number(parcelData.price) > 0 ? parcelData.price : '0.00'}</p>
                     </div>
                   </div>
                 </div>
@@ -561,20 +561,20 @@ export default function BookingPage() {
             <div className="space-y-4">
               <Button 
                 onClick={() => router.push('/login?callbackUrl=/book')}
-                className="h-16 rounded-2xl bg-brand-gold text-white font-black uppercase tracking-widest text-xs"
+                className="h-16 rounded-2xl bg-brand-gold text-white font-bold uppercase tracking-widest text-xs"
               >
                 Sign In to Account
               </Button>
               <Button 
                 variant="outline"
                 onClick={() => router.push('/signup?role=customer&callbackUrl=/book')}
-                className="h-16 rounded-2xl bg-white border-2 border-slate-100 text-brand-gold font-black uppercase tracking-widest text-xs hover:border-brand-gold transition-all"
+                className="h-16 rounded-2xl bg-white border-2 border-slate-100 text-brand-gold font-bold uppercase tracking-widest text-xs hover:border-brand-gold transition-all"
               >
                 Create New Profile
               </Button>
             </div>
 
-            <p className="text-center mt-8 text-[10px] font-black text-slate-300 uppercase tracking-widest">
+            <p className="text-center mt-8 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
               Secured by Digaxy Auth
             </p>
           </Card>

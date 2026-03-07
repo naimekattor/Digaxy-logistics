@@ -255,7 +255,7 @@ export default function EditProfilePage() {
                     <button 
                         type="submit"
                         disabled={saving || success}
-                        className="w-full py-4 bg-brand-gold text-white rounded-2xl font-black text-lg hover:bg-black transition-all shadow-lg shadow-gray-200 disabled:opacity-50 transform active:scale-95"
+                        className="w-full py-4 bg-brand-gold text-white rounded-2xl font-bold text-lg hover:bg-black transition-all shadow-lg shadow-gray-200 disabled:opacity-50 transform active:scale-95"
                     >
                         {saving ? (
                             <div className="flex items-center justify-center gap-3">

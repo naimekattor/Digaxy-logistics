@@ -16,7 +16,7 @@ export default function PrivacyPage() {
     <div className="min-h-screen bg-white font-sans text-slate-900 pb-20">
       {/* Header Section */}
       <header className="pt-20 pb-12 px-4 text-center max-w-4xl mx-auto">
-        <h1 className="text-4xl font-black text-[#0f2a3f] mb-8">Privacy Policy</h1>
+        <h1 className="text-4xl font-bold text-[#0f2a3f] mb-8">Privacy Policy</h1>
         <p className="text-slate-600 text-sm leading-relaxed">
           This Privacy Policy describes how Digaxy ("we", "our", or "us") collects, uses, maintains, and protects information obtained from users ("Users") of the Digaxy website and services ("Site"). This policy applies to all visitors, customers, drivers, movers, and anyone interacting with our platform.
         </p>

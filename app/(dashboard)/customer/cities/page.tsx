@@ -29,7 +29,7 @@ export default function Cities() {
         {/* --- Popular Cities (Colorado) --- */}
         <section className="mb-24">
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-black text-[#111827] mb-2">Popular Cities We Serve</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#111827] mb-2">Popular Cities We Serve</h2>
             <h3 className="text-lg font-bold text-gray-500">Colorado (State)</h3>
             <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest">Fast service across Colorado cities</p>
           </div>

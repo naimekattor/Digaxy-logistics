@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, Star, Truck, MapPin, Check, Search } from 'lucide-react';
-import { Button, Input, Card } from '@/components/ui/Primitives';
+import { ChevronLeft, Star, Truck, MapPin, Check } from 'lucide-react';
+import { Card } from '@/components/ui/Primitives';
+
+import CityEstimateForm from '@/components/city/CityEstimateForm';
 
 import { notFound } from 'next/navigation';
 
@@ -37,32 +39,12 @@ export default async function DynamicCityPage({ params }: { params: Promise<{ sl
         </div>
 
         <section className="text-center mb-16">
-          <h1 className="text-5xl font-black text-gray-900 mb-4 leading-tight">Digaxy Movers in <br /> <span className="text-brand-gold italic">{cityName}, {state}</span></h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4 leading-tight">Digaxy Movers in <br /> <span className="text-brand-gold ">{cityName}, {state}</span></h1>
           <p className="text-xl text-gray-500 font-medium italic max-w-2xl mx-auto">
             Fast, affordable on-demand moving and delivery services anywhere in {cityName}!
           </p>
 
-          <div className="mt-12 p-10 max-w-lg mx-auto space-y-6">
-            <div className="space-y-4">
-                <div className="relative">
-                    <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-gold" size={20} />
-                    <Input
-                        placeholder="Pickup address"
-                        className="w-full h-16 pl-16 pr-6  border rounded-2xl text-lg font-medium outline-none focus:ring-2 focus:ring-brand-gold transition-all"
-                    />
-                </div>
-                <div className="relative">
-                    <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-gold" size={20} />
-                    <Input
-                        placeholder="Drop-off address"
-                        className="w-full h-16 pl-16 pr-6  border rounded-2xl text-lg font-medium outline-none focus:ring-2 focus:ring-brand-gold transition-all"
-                    />
-                </div>
-            </div>
-            <Button className="w-96 h-14 text-xl font-semibold rounded-[16px] bg-brand-gold hover:bg-[#D4A017] text-white  shadow-xl shadow-brand-gold/20 transition-all text-xl">
-              See prices
-            </Button>
-          </div>
+          <CityEstimateForm />
         </section>
 
         <section className="mb-16">
@@ -119,7 +101,7 @@ export default async function DynamicCityPage({ params }: { params: Promise<{ sl
 
         <section className=" p-12 md:p-20 relative overflow-hidden">
           <div className="relative z-10">
-              <h2 className="text-4xl font-black mb-12">Why Choose Digaxy In <br /><span className="text-brand-gold">{cityName}</span></h2>
+              <h2 className="text-4xl font-bold mb-12">Why Choose Digaxy In <br /><span className="text-brand-gold">{cityName}</span></h2>
               <div className="space-y-4 gap-8 max-w-3xl">
                 {[
                   'Near-instant delivery times',

@@ -96,7 +96,7 @@ export default function CustomerNotificationsPage() {
             <div className="flex justify-between items-center mb-12">
                 <button 
                     onClick={() => router.back()}
-                    className="flex items-center gap-4 text-3xl font-black text-gray-900 hover:text-brand-gold transition-colors group"
+                    className="flex items-center gap-4 text-3xl font-bold text-gray-900 hover:text-brand-gold transition-colors group"
                 >
                     <div className="p-2 rounded-full group-hover:bg-brand-gold/10 transition-colors">
                         <ChevronLeft size={32} />
@@ -138,7 +138,7 @@ export default function CustomerNotificationsPage() {
                     <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
                         <Bell size={32} className="text-red-600" />
                     </div>
-                    <h3 className="font-black text-2xl mb-2 text-gray-900">Oops! Something went wrong</h3>
+                    <h3 className="font-bold text-2xl mb-2 text-gray-900">Oops! Something went wrong</h3>
                     <p className="text-gray-600 font-medium mb-8 max-w-xs mx-auto">{error}</p>
                     <button 
                         onClick={fetchNotifications}
@@ -163,7 +163,7 @@ export default function CustomerNotificationsPage() {
                             <div className="bg-white w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
                                 <Bell size={48} className="text-gray-200" />
                             </div>
-                            <h3 className="text-2xl font-black text-gray-900 mb-2">No notifications yet</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">No notifications yet</h3>
                             <p className="text-gray-500 font-medium max-w-xs mx-auto">We'll notify you here when there are updates on your bookings.</p>
                         </div>
                     )}

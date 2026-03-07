@@ -625,12 +625,12 @@ const formattedLng = lng.toFixed(6);
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <Card className="p-8 bg-gray-50 border-none rounded-[2rem] flex flex-col items-center justify-center text-center">
                           <p className="text-gray-500 font-bold mb-2">Estimated Distance</p>
-                          <h4 className="text-4xl font-black text-gray-900">{parcelData.estimated_distance_km} km</h4>
+                          <h4 className="text-4xl font-bold text-gray-900">{parcelData.estimated_distance_km} km</h4>
                           <p className="text-sm text-gray-400 mt-2">Shortest possible route</p>
                       </Card>
                       <Card className="p-8 bg-brand-gold/5 border-2 border-brand-gold/20 rounded-[2rem] flex flex-col items-center justify-center text-center">
                           <p className="text-brand-gold font-bold mb-2">Estimated Price</p>
-                          <h4 className="text-4xl font-black text-brand-gold">${parcelData.price}</h4>
+                          <h4 className="text-4xl font-bold text-brand-gold">${parcelData.price}</h4>
                           <p className="text-sm text-gray-400 mt-2">Based on current rates</p>
                       </Card>
                   </div>

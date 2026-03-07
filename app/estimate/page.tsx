@@ -40,8 +40,8 @@ const ServiceType = ({
         className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-110"
       />
     </div>
-    <h4 className={`font-black text-sm ${selected ? "text-[#a67c00]" : "text-slate-800 uppercase tracking-tight"}`}>{name}</h4>
-    <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest">{description}</p>
+    <h4 className={`font-bold text-sm ${selected ? "text-[#a67c00]" : "text-slate-800 uppercase tracking-tight"}`}>{name}</h4>
+    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest">{description}</p>
     
     {selected && (
       <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#a67c00] flex items-center justify-center">
@@ -159,7 +159,7 @@ function EstimateContent() {
         {/* Left Column: Scrollable Content */}
         <div className="overflow-y-auto px-0 py-12 lg:px-6">
           <header className="mb-12 text-center lg:text-left">
-            <h1 className="text-4xl md:text-5xl font-black text-[#111827] mb-4 tracking-tight leading-none">Get an estimate</h1>
+            <h1 className="text-4xl md:text-5xl font-bold text-[#111827] mb-4 tracking-tight leading-none">Get an estimate</h1>
             <p className="text-gray-500 text-lg font-medium">Enter your addresses to see instant prices with Digaxy.</p>
           </header>
 
@@ -167,7 +167,7 @@ function EstimateContent() {
           <section className="space-y-4 mb-12">
             <div className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-sm border border-slate-100/80 space-y-8">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Pickup Address</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] ml-2">Pickup Address</label>
                 <div className="flex items-center gap-3 bg-[#FDFBF7] border border-[#E8DFC5] rounded-2xl px-5 h-[62px] text-sm text-gray-900 focus-within:ring-2 focus-within:ring-[#A87900] transition-all group">
                   <MapPin size={20} className="text-gray-400 group-focus-within:text-[#A87900] shrink-0" />
                   {isLoaded ? (
@@ -177,7 +177,7 @@ function EstimateContent() {
                         key={pickup?.label} 
                         defaultValue={pickup?.label || ""}
                         placeholder="Where are we picking up?"
-                        className="w-full bg-transparent border-none outline-none font-bold text-gray-800 placeholder:text-gray-400 placeholder:font-black placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+                        className="w-full bg-transparent border-none outline-none font-bold text-gray-800 placeholder:text-gray-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
                       />
                     </Autocomplete>
                   ) : (
@@ -187,7 +187,7 @@ function EstimateContent() {
               </div>
 
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Drop Address</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.25em] ml-2">Drop Address</label>
                 <div className="flex items-center gap-3 bg-[#FDFBF7] border border-[#E8DFC5] rounded-2xl px-5 h-[62px] text-sm text-gray-900 focus-within:ring-2 focus-within:ring-[#A87900] transition-all group">
                   <MapPin size={20} className="text-slate-800 group-focus-within:text-[#A87900] shrink-0" />
                   {isLoaded ? (
@@ -197,7 +197,7 @@ function EstimateContent() {
                         key={drop?.label}
                         defaultValue={drop?.label || ""}
                         placeholder="Where is the destination?"
-                        className="w-full bg-transparent border-none outline-none font-bold text-gray-800 placeholder:text-gray-400 placeholder:font-black placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+                        className="w-full bg-transparent border-none outline-none font-bold text-gray-800 placeholder:text-gray-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
                       />
                     </Autocomplete>
                   ) : (
@@ -212,13 +212,13 @@ function EstimateContent() {
                     <Truck size={60} className="text-amber-900" />
                   </div>
                   <div className="space-y-1 z-10">
-                    <p className="text-[10px] font-black text-amber-800 uppercase tracking-[0.2em]">Route Distance</p>
-                    <p className="text-3xl font-black text-amber-950">{distanceKm.toFixed(1)} <span className="text-sm font-bold opacity-40">km</span></p>
+                    <p className="text-[10px] font-bold text-amber-800 uppercase tracking-[0.2em]">Route Distance</p>
+                    <p className="text-3xl font-bold text-amber-950">{distanceKm.toFixed(1)} <span className="text-sm font-bold opacity-40">km</span></p>
                   </div>
                   <div className="h-12 w-[2px] bg-amber-200 hidden sm:block" />
                   <div className="text-right space-y-1 z-10">
-                    <p className="text-[10px] font-black text-amber-800 uppercase tracking-[0.2em]">Estimated Price</p>
-                    <p className="text-3xl font-black text-amber-950">${totalEstimated.toFixed(0)}</p>
+                    <p className="text-[10px] font-bold text-amber-800 uppercase tracking-[0.2em]">Estimated Price</p>
+                    <p className="text-3xl font-bold text-amber-950">${totalEstimated.toFixed(0)}</p>
                   </div>
                 </div>
               )}
@@ -227,7 +227,7 @@ function EstimateContent() {
 
           {/* Service Types */}
           <section className="mb-12">
-            <h3 className="text-xl font-black text-[#111827] mb-6 px-1 uppercase tracking-tight">Select Vehicle</h3>
+            <h3 className="text-xl font-bold text-[#111827] mb-6 px-1 uppercase tracking-tight">Select Vehicle</h3>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {VEHICLES.map((v) => (
                 <ServiceType key={v.id} {...v} selected={selectedVehicle.id === v.id} onClick={() => setSelectedVehicle(v)} />
@@ -244,10 +244,10 @@ function EstimateContent() {
              <div className="flex flex-col items-center mb-10">
                 <div className="w-16 h-1.5 bg-amber-600/10 rounded-full mb-8" />
                 <div className="text-center relative">
-                   <p className="text-5xl font-black text-[#111827] mb-1 tracking-tighter">
-                      {distanceKm > 0 ? (Math.round(distanceKm * 2) + 30) : "--"} <span className="text-xl opacity-30 font-black uppercase tracking-widest ml-1">min</span>
+                   <p className="text-5xl font-bold text-[#111827] mb-1 tracking-tighter">
+                      {distanceKm > 0 ? (Math.round(distanceKm * 2) + 30) : "--"} <span className="text-xl opacity-30 font-bold uppercase tracking-widest ml-1">min</span>
                    </p>
-                   <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.25em]">Est. Handling Time</p>
+                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.25em]">Est. Handling Time</p>
                 </div>
              </div>
 
@@ -255,34 +255,34 @@ function EstimateContent() {
                 <div className="flex justify-between items-baseline group/row">
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-slate-600 group-hover/row:text-slate-900 transition-colors">Base fare</span>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-60">Digaxy {selectedVehicle.name}</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest opacity-60">Digaxy {selectedVehicle.name}</span>
                   </div>
-                  <span className="font-black text-slate-800 text-xl">${distanceKm > 0 ? basePrice.toFixed(2) : "--"}</span>
+                  <span className="font-bold text-slate-800 text-xl">${distanceKm > 0 ? basePrice.toFixed(2) : "--"}</span>
                 </div>
 
                 <div className="flex justify-between items-baseline group/row">
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-slate-600 group-hover/row:text-slate-900 transition-colors">Travel price</span>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-60">{distanceKm.toFixed(1)} km distance</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest opacity-60">{distanceKm.toFixed(1)} km distance</span>
                   </div>
-                  <span className="font-black text-slate-800 text-xl">${distanceKm > 0 ? distanceFee.toFixed(2) : "--"}</span>
+                  <span className="font-bold text-slate-800 text-xl">${distanceKm > 0 ? distanceFee.toFixed(2) : "--"}</span>
                 </div>
 
                 <div className="flex justify-between items-baseline group/row">
                   <div className="flex flex-col">
                     <span className="text-sm font-bold text-slate-600 group-hover/row:text-slate-900 transition-colors">Handling fee</span>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-60">Load & Unload effort</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest opacity-60">Load & Unload effort</span>
                   </div>
-                  <span className="font-black text-slate-800 text-xl">${distanceKm > 0 ? laborFee.toFixed(2) : "0.00"}</span>
+                  <span className="font-bold text-slate-800 text-xl">${distanceKm > 0 ? laborFee.toFixed(2) : "0.00"}</span>
                 </div>
 
                 <div className="pt-8 border-t-2 border-slate-50 flex justify-between items-center">
-                  <span className="text-xl font-black text-[#111827] uppercase tracking-tighter">Total Estimate</span>
+                  <span className="text-xl font-bold text-[#111827] uppercase tracking-tighter">Total Estimate</span>
                   <div className="text-right">
-                    <span className="block text-5xl font-black text-brand-gold leading-none tracking-tighter">
+                    <span className="block text-5xl font-bold text-brand-gold leading-none tracking-tighter">
                       ${distanceKm > 0 ? totalEstimated.toFixed(0) : "0.00"}
                     </span>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1 block">taxes included</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1 block">taxes included</span>
                   </div>
                 </div>
              </div>
@@ -291,7 +291,7 @@ function EstimateContent() {
                 <div className="p-2 bg-amber-100/50 rounded-xl">
                   <Star size={18} fill="currentColor" className="text-brand-gold shrink-0" />
                 </div>
-                <p className="text-[11px] text-amber-900 leading-relaxed font-black uppercase tracking-tight opacity-70">
+                <p className="text-[11px] text-amber-900 leading-relaxed font-bold uppercase tracking-tight opacity-70">
                   This is a non-binding estimate based on average handling speeds. Final price is calculated based on real-time activity tracking during the move.
                 </p>
              </div>
@@ -299,7 +299,7 @@ function EstimateContent() {
 
           <button 
             onClick={handleContinueToBooking}
-            className="group relative w-full bg-[#a67c00] hover:bg-[#8e6a00] text-white font-black py-7 rounded-[2rem] transition-all shadow-xl shadow-amber-200/50 uppercase tracking-[0.25em] text-base transform active:scale-[0.98] mb-8 flex items-center justify-center gap-3 overflow-hidden"
+            className="group relative w-full bg-[#a67c00] hover:bg-[#8e6a00] text-white font-bold py-7 rounded-[2rem] transition-all shadow-xl shadow-amber-200/50 uppercase tracking-[0.25em] text-base transform active:scale-[0.98] mb-8 flex items-center justify-center gap-3 overflow-hidden"
           >
             <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12" />
             <span className="relative z-10">Continue to Booking</span>
@@ -308,7 +308,7 @@ function EstimateContent() {
           
           <div className="flex items-center justify-center gap-4 opacity-30 group">
              <div className="h-[1px] w-12 bg-slate-400 transition-all group-hover:w-20" />
-             <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">Digaxy Professional</p>
+             <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.4em]">Digaxy Professional</p>
              <div className="h-[1px] w-12 bg-slate-400 transition-all group-hover:w-20" />
           </div>
         </div>
@@ -337,7 +337,7 @@ export default function EstimatePage() {
         <Suspense fallback={
           <div className="flex flex-col items-center justify-center h-screen space-y-4">
             <div className="w-12 h-12 border-4 border-amber-600 border-t-transparent rounded-full animate-spin" />
-            <p className="font-black text-slate-300 uppercase tracking-[0.3em] text-xs">Initializing Estimate...</p>
+            <p className="font-bold text-slate-300 uppercase tracking-[0.3em] text-xs">Initializing Estimate...</p>
           </div>
         }>
           <EstimateContent />

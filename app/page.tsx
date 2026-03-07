@@ -349,7 +349,7 @@ export default function LandingPage() {
                           type="text"
                           defaultValue={pickup?.label}
                           placeholder="Where are we picking up?"
-                          className="w-full bg-transparent border-none outline-none font-bold text-gray-800 placeholder:text-gray-400 placeholder:font-black placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+                          className="w-full bg-transparent border-none outline-none font-bold text-gray-800 placeholder:text-gray-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
                         />
                       </Autocomplete>
                     ) : (
@@ -368,7 +368,7 @@ export default function LandingPage() {
                           type="text"
                           defaultValue={drop?.label}
                           placeholder="Where is the destination?"
-                          className="w-full bg-transparent border-none outline-none font-bold text-gray-800 placeholder:text-gray-400 placeholder:font-black placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+                          className="w-full bg-transparent border-none outline-none font-bold text-gray-800 placeholder:text-gray-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
                         />
                       </Autocomplete>
                     ) : (
@@ -378,7 +378,7 @@ export default function LandingPage() {
 
                   <Button 
                     onClick={handlePriceClick} 
-                    className="lg:col-span-2 h-[62px] bg-[#A87900] hover:bg-[#8B6914] text-white font-black rounded-2xl border-none shadow-lg shadow-amber-200/50 flex items-center justify-center gap-2 transform active:scale-95 transition-all text-xs uppercase tracking-[0.2em]"
+                    className="lg:col-span-2 h-[62px] bg-[#A87900] hover:scale-[1.02] text-white font-bold rounded-2xl border-none shadow-lg shadow-amber-200/50 flex items-center justify-center gap-2 transform active:scale-95 transition-all text-xs uppercase tracking-[0.2em]"
                   >
                     <IoIosPricetags  size={18} /> Price
                   </Button>
